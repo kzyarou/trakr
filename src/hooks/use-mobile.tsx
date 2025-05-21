@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 const MOBILE_BREAKPOINT = 768
@@ -16,4 +17,23 @@ export function useIsMobile() {
   }, [])
 
   return !!isMobile
+}
+
+// Add the useMediaQuery function that's imported in Index.tsx
+export function useMediaQuery(query: string) {
+  const [matches, setMatches] = React.useState<boolean>(false)
+
+  React.useEffect(() => {
+    const media = window.matchMedia(query)
+    const onChange = () => {
+      setMatches(media.matches)
+    }
+    
+    setMatches(media.matches)
+    media.addEventListener("change", onChange)
+    
+    return () => media.removeEventListener("change", onChange)
+  }, [query])
+
+  return matches
 }
