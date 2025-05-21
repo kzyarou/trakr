@@ -1,4 +1,5 @@
-import * as React from "react"
+
+import React from "react"
 
 import type {
   ToastActionElement,
@@ -168,6 +169,7 @@ function toast({ ...props }: Toast) {
   }
 }
 
+// Move the useState inside a function component
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState)
 
