@@ -2,11 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import Navbar from '@/components/Navbar';
+import MobileNavbar from '@/components/MobileNavbar';
 import TransactionForm from '@/components/TransactionForm';
 import TransactionList from '@/components/TransactionList';
 import SummaryCards from '@/components/SummaryCards';
 import CategoryPieChart from '@/components/CategoryPieChart';
 import BudgetOverview from '@/components/BudgetOverview';
+import HabitsTab from '@/components/HabitsTab';
 import { 
   getTransactions, 
   saveTransactions, 
@@ -15,6 +17,7 @@ import {
 } from '@/lib/data';
 import { Transaction } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useMediaQuery } from '@/hooks/use-mobile';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -22,6 +25,7 @@ const Index = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [budgets, setBudgets] = useState(getBudgets());
   const { toast } = useToast();
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   // Load transactions from local storage
   useEffect(() => {
@@ -57,11 +61,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar 
-        onNavigate={setCurrentPage} 
-        currentPage={currentPage} 
-        onAddTransaction={() => setShowTransactionForm(true)}
-      />
+      {/* Show traditional navbar on desktop or mobile nav based on screen size */}
+      {!isMobile && (
+        <Navbar 
+          onNavigate={setCurrentPage} 
+          currentPage={currentPage} 
+          onAddTransaction={() => setShowTransactionForm(true)}
+        />
+      )}
       
       <main className="container py-6 px-4 max-w-7xl">
         <div className="space-y-6">
@@ -72,6 +79,7 @@ const Index = () => {
               {currentPage === 'budgets' && 'Budgets'}
               {currentPage === 'reports' && 'Reports'}
               {currentPage === 'settings' && 'Settings'}
+              {currentPage === 'habits' && 'Habits'}
             </h1>
             <p className="text-muted-foreground">
               {currentPage === 'dashboard' && 'Overview of your financial status'}
@@ -79,6 +87,7 @@ const Index = () => {
               {currentPage === 'budgets' && 'Track your spending against budgets'}
               {currentPage === 'reports' && 'Analyze your financial patterns'}
               {currentPage === 'settings' && 'Customize your experience'}
+              {currentPage === 'habits' && 'Link habits to financial goals'}
             </p>
           </div>
 
@@ -142,6 +151,12 @@ const Index = () => {
             </div>
           )}
 
+          {currentPage === 'habits' && (
+            <div className="animate-fade-in">
+              <HabitsTab />
+            </div>
+          )}
+
           {currentPage === 'budgets' && (
             <div className="animate-fade-in text-center py-20">
               <h2 className="text-xl font-semibold">Budget Management</h2>
@@ -164,6 +179,18 @@ const Index = () => {
           )}
         </div>
       </main>
+
+      {/* Mobile bottom navigation */}
+      {isMobile && (
+        <MobileNavbar
+          currentPage={currentPage}
+          onNavigate={setCurrentPage}
+          onAddTransaction={() => setShowTransactionForm(true)}
+        />
+      )}
+
+      {/* Add padding at the bottom to account for mobile navigation */}
+      {isMobile && <div className="h-20" />}
 
       <TransactionForm 
         open={showTransactionForm}

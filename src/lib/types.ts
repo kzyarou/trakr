@@ -10,6 +10,8 @@ export interface Transaction {
   type: TransactionType;
   paymentMethod: string;
   tags?: string[];
+  location?: string;
+  habitLink?: string;
 }
 
 export interface Category {
@@ -41,3 +43,16 @@ export interface SummaryStats {
     [key: string]: number;
   };
 }
+
+export interface Habit {
+  id: string;
+  name: string;
+  description?: string;
+  savingsAmount: number;
+  targetCategory: string;
+  frequency?: 'daily' | 'weekly' | 'monthly';
+  linkedAction?: string;
+  createdAt: Date;
+  active: boolean;
+}
+
