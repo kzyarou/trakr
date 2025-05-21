@@ -12,7 +12,8 @@ export interface Transaction {
   tags?: string[];
   location?: string;
   habitLink?: string;
-  walletId?: string;  // New: Link to a specific wallet
+  walletId?: string;  
+  carbonImpact?: number;
 }
 
 export interface Category {
@@ -57,7 +58,6 @@ export interface Habit {
   active: boolean;
 }
 
-// New interface for wallet accounts
 export interface Wallet {
   id: string;
   name: string;
@@ -69,12 +69,18 @@ export interface Wallet {
   createdAt: Date;
 }
 
-// New interface for mini-apps
 export interface MiniApp {
   id: string;
   name: string;
   description: string;
   icon: string;
-  component: string; // Name of the component to render
+  component: string;
   active: boolean;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: Date;
 }

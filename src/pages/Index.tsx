@@ -1,7 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
+import { useMediaQuery } from '@/hooks/use-mobile';
 import Navbar from '@/components/Navbar';
+import TrakrHeader from '@/components/TrakrHeader';
 import MobileNavbar from '@/components/MobileNavbar';
 import TransactionForm from '@/components/TransactionForm';
 import TransactionList from '@/components/TransactionList';
@@ -17,23 +19,26 @@ import {
   getTransactions, 
   saveTransactions, 
   getBudgets, 
-  calculateSummary
+  calculateSummary,
+  getWallets,
+  saveWallets
 } from '@/lib/data';
-import { Transaction } from '@/lib/types';
+import { Transaction, Wallet } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useMediaQuery } from '@/hooks/use-mobile';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [showTransactionForm, setShowTransactionForm] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [budgets, setBudgets] = useState(getBudgets());
+  const [wallets, setWallets] = useState<Wallet[]>([]);
   const { toast } = useToast();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  // Load transactions from local storage
+  // Load transactions and wallets from local storage
   useEffect(() => {
     setTransactions(getTransactions());
+    setWallets(getWallets());
   }, []);
 
   // Calculate summary statistics
@@ -41,9 +46,28 @@ const Index = () => {
 
   // Handle adding a new transaction
   const handleAddTransaction = (transaction: Transaction) => {
+    // Update transactions
     const newTransactions = [...transactions, transaction];
     setTransactions(newTransactions);
     saveTransactions(newTransactions);
+    
+    // Update wallet balance if wallet ID is provided
+    if (transaction.walletId) {
+      const updatedWallets = wallets.map(wallet => {
+        if (wallet.id === transaction.walletId) {
+          // Add or subtract amount based on transaction type
+          const newBalance = transaction.type === 'income' 
+            ? wallet.balance + transaction.amount 
+            : wallet.balance - transaction.amount;
+          
+          return { ...wallet, balance: newBalance };
+        }
+        return wallet;
+      });
+      
+      setWallets(updatedWallets);
+      saveWallets(updatedWallets);
+    }
     
     toast({
       title: "Transaction added",
@@ -53,6 +77,29 @@ const Index = () => {
 
   // Handle deleting a transaction
   const handleDeleteTransaction = (id: string) => {
+    // Find the transaction before deleting it
+    const transactionToDelete = transactions.find(tx => tx.id === id);
+    
+    if (transactionToDelete && transactionToDelete.walletId) {
+      // Reverse the effect on the wallet
+      const updatedWallets = wallets.map(wallet => {
+        if (wallet.id === transactionToDelete.walletId) {
+          // If the deleted transaction was an expense, add the amount back
+          // If it was income, subtract the amount
+          const newBalance = transactionToDelete.type === 'income' 
+            ? wallet.balance - transactionToDelete.amount 
+            : wallet.balance + transactionToDelete.amount;
+          
+          return { ...wallet, balance: newBalance };
+        }
+        return wallet;
+      });
+      
+      setWallets(updatedWallets);
+      saveWallets(updatedWallets);
+    }
+    
+    // Update transactions
     const newTransactions = transactions.filter(tx => tx.id !== id);
     setTransactions(newTransactions);
     saveTransactions(newTransactions);
@@ -65,6 +112,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Added TrakrHeader */}
+      <TrakrHeader />
+      
       {/* Show traditional navbar on desktop or mobile nav based on screen size */}
       {!isMobile && (
         <Navbar 
