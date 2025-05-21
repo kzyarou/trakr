@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,25 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+        // Trakr custom colors
+        trakr: {
+          income: '#38A169', // Green for income
+          expense: '#E53E3E', // Red for expenses
+          neutral: '#3182CE', // Blue for neutral
+          budget: '#805AD5', // Purple for budget
+          card: '#EBF8FF', // Light blue for cards
+          chart: {
+            blue: '#3182CE',
+            green: '#38A169',
+            red: '#E53E3E',
+            purple: '#805AD5',
+            orange: '#ED8936',
+            teal: '#38B2AC',
+            yellow: '#ECC94B',
+            indigo: '#667EEA'
+          }
+        }
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +103,21 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' }
+        },
+        'slide-in': {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' }
+        }
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+        'fade-in': 'fade-in 0.3s ease-out',
+        'slide-in': 'slide-in 0.3s ease-out'
 			}
 		}
 	},
