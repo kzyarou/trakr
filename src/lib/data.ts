@@ -1,5 +1,5 @@
 
-import { Transaction, Category, Budget, SummaryStats, TransactionType } from './types';
+import { Transaction, Category, Budget, SummaryStats, TransactionType, Wallet, MiniApp } from './types';
 
 // Sample categories
 export const defaultCategories: Category[] = [
@@ -28,6 +28,35 @@ export const defaultPaymentMethods = [
   'Other'
 ];
 
+// Default wallets
+export const defaultWallets: Wallet[] = [
+  {
+    id: 'cash',
+    name: 'Cash',
+    balance: 500,
+    currency: 'USD',
+    color: '#38A169', // green
+    isDefault: true,
+    createdAt: new Date()
+  },
+  {
+    id: 'bank',
+    name: 'Bank Account',
+    balance: 2500,
+    currency: 'USD',
+    color: '#3182CE', // blue
+    createdAt: new Date()
+  },
+  {
+    id: 'savings',
+    name: 'Savings',
+    balance: 10000,
+    currency: 'USD',
+    color: '#805AD5', // purple
+    createdAt: new Date()
+  }
+];
+
 // Generate sample transactions for the current month
 const today = new Date();
 const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -42,7 +71,8 @@ export const sampleTransactions: Transaction[] = [
     description: 'Weekly groceries',
     type: 'expense',
     paymentMethod: 'Credit Card',
-    tags: ['essential']
+    tags: ['essential'],
+    walletId: 'bank'
   },
   {
     id: '2',
@@ -51,7 +81,8 @@ export const sampleTransactions: Transaction[] = [
     category: 'transportation',
     description: 'Gas',
     type: 'expense',
-    paymentMethod: 'Debit Card'
+    paymentMethod: 'Debit Card',
+    walletId: 'bank'
   },
   {
     id: '3',
@@ -61,7 +92,8 @@ export const sampleTransactions: Transaction[] = [
     description: 'Monthly salary',
     type: 'income',
     paymentMethod: 'Bank Transfer',
-    tags: ['work']
+    tags: ['work'],
+    walletId: 'bank'
   },
   {
     id: '4',
@@ -70,7 +102,8 @@ export const sampleTransactions: Transaction[] = [
     category: 'entertainment',
     description: 'Movie night',
     type: 'expense',
-    paymentMethod: 'Cash'
+    paymentMethod: 'Cash',
+    walletId: 'cash'
   },
   {
     id: '5',
@@ -80,7 +113,8 @@ export const sampleTransactions: Transaction[] = [
     description: 'Electricity bill',
     type: 'expense',
     paymentMethod: 'Bank Transfer',
-    tags: ['bills', 'home']
+    tags: ['bills', 'home'],
+    walletId: 'bank'
   },
   {
     id: '6',
@@ -90,7 +124,8 @@ export const sampleTransactions: Transaction[] = [
     description: 'Website project',
     type: 'income',
     paymentMethod: 'Bank Transfer',
-    tags: ['work', 'freelance']
+    tags: ['work', 'freelance'],
+    walletId: 'bank'
   },
   {
     id: '7',
@@ -99,7 +134,8 @@ export const sampleTransactions: Transaction[] = [
     category: 'shopping',
     description: 'New clothes',
     type: 'expense',
-    paymentMethod: 'Credit Card'
+    paymentMethod: 'Credit Card',
+    walletId: 'bank'
   }
 ];
 
@@ -132,6 +168,8 @@ export const sampleBudgets: Budget[] = [
 const TRANSACTIONS_KEY = 'trakr_transactions';
 const CATEGORIES_KEY = 'trakr_categories';
 const BUDGETS_KEY = 'trakr_budgets';
+const WALLETS_KEY = 'trakr_wallets';
+const MINI_APPS_KEY = 'trakr_mini_apps';
 
 // Local Storage Utilities
 export const saveTransactions = (transactions: Transaction[]): void => {
@@ -199,6 +237,62 @@ export const getBudgets = (): Budget[] => {
     }));
   } catch (error) {
     console.error('Error parsing budgets:', error);
+    return [];
+  }
+};
+
+// New: Wallet functions
+export const saveWallets = (wallets: Wallet[]): void => {
+  localStorage.setItem(WALLETS_KEY, JSON.stringify(wallets));
+};
+
+export const getWallets = (): Wallet[] => {
+  const data = localStorage.getItem(WALLETS_KEY);
+  if (!data) {
+    // Initialize with default wallets if nothing exists
+    saveWallets(defaultWallets);
+    return defaultWallets;
+  }
+  
+  try {
+    const parsed = JSON.parse(data);
+    return parsed.map((wallet: any) => ({
+      ...wallet,
+      createdAt: new Date(wallet.createdAt)
+    }));
+  } catch (error) {
+    console.error('Error parsing wallets:', error);
+    return defaultWallets;
+  }
+};
+
+// New: Mini App functions
+export const saveMiniApps = (miniApps: MiniApp[]): void => {
+  localStorage.setItem(MINI_APPS_KEY, JSON.stringify(miniApps));
+};
+
+export const getMiniApps = (): MiniApp[] => {
+  const data = localStorage.getItem(MINI_APPS_KEY);
+  if (!data) {
+    // Initialize with sample mini apps if nothing exists
+    const defaultMiniApps: MiniApp[] = [
+      {
+        id: 'tip-calculator',
+        name: 'Tip Calculator',
+        description: 'Calculate tips and split bills',
+        icon: 'calculator',
+        component: 'TipCalculator',
+        active: true
+      }
+    ];
+    saveMiniApps(defaultMiniApps);
+    return defaultMiniApps;
+  }
+  
+  try {
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error parsing mini apps:', error);
     return [];
   }
 };
@@ -276,6 +370,14 @@ export const filterTransactionsByCategory = (
   categoryId: string
 ): Transaction[] => {
   return transactions.filter(tx => tx.category === categoryId);
+};
+
+// Filter transactions by wallet
+export const filterTransactionsByWallet = (
+  transactions: Transaction[],
+  walletId: string
+): Transaction[] => {
+  return transactions.filter(tx => tx.walletId === walletId);
 };
 
 // Generate a new unique ID

@@ -9,6 +9,10 @@ import SummaryCards from '@/components/SummaryCards';
 import CategoryPieChart from '@/components/CategoryPieChart';
 import BudgetOverview from '@/components/BudgetOverview';
 import HabitsTab from '@/components/HabitsTab';
+import WalletManagement from '@/components/WalletManagement';
+import BudgetManagement from '@/components/BudgetManagement';
+import ReportsPage from '@/components/ReportsPage';
+import MiniAppsGrid from '@/components/MiniAppsGrid';
 import { 
   getTransactions, 
   saveTransactions, 
@@ -71,7 +75,7 @@ const Index = () => {
       )}
       
       <main className="container py-6 px-4 max-w-7xl">
-        <div className="space-y-6">
+        <div className="space-y-6 pb-16">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
               {currentPage === 'dashboard' && 'Dashboard'}
@@ -80,6 +84,8 @@ const Index = () => {
               {currentPage === 'reports' && 'Reports'}
               {currentPage === 'settings' && 'Settings'}
               {currentPage === 'habits' && 'Habits'}
+              {currentPage === 'wallets' && 'Wallets'}
+              {currentPage === 'tools' && 'Mini Tools'}
             </h1>
             <p className="text-muted-foreground">
               {currentPage === 'dashboard' && 'Overview of your financial status'}
@@ -88,6 +94,8 @@ const Index = () => {
               {currentPage === 'reports' && 'Analyze your financial patterns'}
               {currentPage === 'settings' && 'Customize your experience'}
               {currentPage === 'habits' && 'Link habits to financial goals'}
+              {currentPage === 'wallets' && 'Manage your accounts and balances'}
+              {currentPage === 'tools' && 'Useful financial calculators and tools'}
             </p>
           </div>
 
@@ -158,16 +166,26 @@ const Index = () => {
           )}
 
           {currentPage === 'budgets' && (
-            <div className="animate-fade-in text-center py-20">
-              <h2 className="text-xl font-semibold">Budget Management</h2>
-              <p className="text-gray-500 mt-2">Budget features coming soon!</p>
+            <div className="animate-fade-in">
+              <BudgetManagement transactions={transactions} />
             </div>
           )}
 
           {currentPage === 'reports' && (
-            <div className="animate-fade-in text-center py-20">
-              <h2 className="text-xl font-semibold">Financial Reports</h2>
-              <p className="text-gray-500 mt-2">Detailed reports coming soon!</p>
+            <div className="animate-fade-in">
+              <ReportsPage transactions={transactions} />
+            </div>
+          )}
+
+          {currentPage === 'wallets' && (
+            <div className="animate-fade-in">
+              <WalletManagement />
+            </div>
+          )}
+
+          {currentPage === 'tools' && (
+            <div className="animate-fade-in">
+              <MiniAppsGrid />
             </div>
           )}
 

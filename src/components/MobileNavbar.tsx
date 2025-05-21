@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { HomeIcon, BarChart2Icon, PlusIcon, ListIcon, UserIcon } from 'lucide-react';
+import { HomeIcon, BarChart2Icon, PlusIcon, ListIcon, WalletIcon, CoinIcon, RocketIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MobileNavbarProps {
@@ -16,10 +16,10 @@ const MobileNavbar: React.FC<MobileNavbarProps> = ({
 }) => {
   const navItems = [
     { id: 'dashboard', label: 'Home', icon: HomeIcon },
-    { id: 'transactions', label: 'History', icon: ListIcon },
+    { id: 'wallets', label: 'Wallets', icon: WalletIcon },
     { id: 'add', label: 'Add', icon: PlusIcon, action: onAddTransaction },
-    { id: 'reports', label: 'Reports', icon: BarChart2Icon },
-    { id: 'settings', label: 'Settings', icon: UserIcon }
+    { id: 'budgets', label: 'Budget', icon: CoinIcon },
+    { id: 'tools', label: 'Tools', icon: RocketIcon }
   ];
 
   return (
