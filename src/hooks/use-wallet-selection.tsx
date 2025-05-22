@@ -16,7 +16,19 @@ export function useWalletSelection() {
         const result = await getWallets();
         
         if (result.success) {
-          setWallets(result.wallets);
+          // Make sure to properly transform the data to match Wallet type
+          const typedWallets: Wallet[] = result.wallets.map((wallet: any) => ({
+            id: wallet.id || '',
+            name: wallet.name || '',
+            balance: wallet.balance || 0,
+            currency: wallet.currency || 'PHP',
+            color: wallet.color || '#E2E8F0',
+            type: wallet.type || 'cash',
+            isDefault: wallet.isDefault || false,
+            createdAt: wallet.createdAt || new Date()
+          }));
+          
+          setWallets(typedWallets);
         } else {
           toast({
             title: "Error loading wallets",
