@@ -144,19 +144,32 @@ const Index = () => {
           <main className="container py-4 px-3 md:py-6 md:px-4 max-w-7xl">
             {/* Mobile Header with Menu Button */}
             {isMobile && (
-              <div className="mb-3 flex items-center">
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => setShowMobileSidebar(true)}
-                >
-                  <Menu className="h-5 w-5" />
-                </Button>
-                <h1 className="text-xl font-bold ml-2">Trakr</h1>
+              <div className="fixed top-0 left-0 right-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b px-4 py-3">
+                <div className="flex items-center justify-between max-w-7xl mx-auto">
+                  <div className="flex items-center gap-3">
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => setShowMobileSidebar(true)}
+                    >
+                      <Menu className="h-5 w-5" />
+                    </Button>
+                    <h1 className="text-xl font-bold">Trakr</h1>
+                  </div>
+                  <Button 
+                    size="sm" 
+                    onClick={() => setShowTransactionForm(true)}
+                  >
+                    Add
+                  </Button>
+                </div>
               </div>
             )}
             
-            <div className="space-y-4 md:space-y-6 pb-16">
+            {/* Add padding for mobile header */}
+            {isMobile && <div className="h-14" />}
+            
+            <div className="space-y-4 md:space-y-6 pb-20">
               <div>
                 <h1 className="text-xl md:text-3xl font-bold tracking-tight">
                   {currentPage === 'dashboard' && 'Dashboard'}
@@ -342,9 +355,6 @@ const Index = () => {
         onOpenChange={setShowMobileSidebar}
         onNavigate={setCurrentPage}
       />
-
-      {/* Add padding at the bottom to account for mobile navigation */}
-      {isMobile && <div className="h-16" />}
 
       <TransactionForm 
         open={showTransactionForm}

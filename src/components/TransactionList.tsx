@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { SearchIcon, FilterIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon } from 'lucide-react';
@@ -22,6 +21,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { defaultCategories } from '@/lib/data';
+import { useMediaQuery } from '@/hooks/use-mobile';
 
 interface TransactionListProps {
   transactions: Transaction[];
@@ -37,6 +37,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'date' | 'amount'>('date');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   // Filter and sort transactions
   const filteredTransactions = transactions.filter(transaction => {
@@ -108,9 +109,132 @@ const TransactionList: React.FC<TransactionListProps> = ({
     );
   };
 
+  if (isMobile) {
+    return (
+      <div className="space-y-4">
+        {/* Filters and search */}
+        <div className="flex flex-col space-y-2">
+          <div className="relative">
+            <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+            <Input 
+              placeholder="Search transactions..." 
+              className="pl-8"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div className="flex gap-2">
+            <Select
+              value={typeFilter}
+              onValueChange={setTypeFilter}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="income">Income</SelectItem>
+                <SelectItem value="expense">Expense</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select
+              value={categoryFilter}
+              onValueChange={setCategoryFilter}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {defaultCategories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    <div className="flex items-center">
+                      <div 
+                        className="w-2 h-2 rounded-full mr-2"
+                        style={{ backgroundColor: category.color }}
+                      ></div>
+                      {category.name}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Mobile Transaction List */}
+        {filteredTransactions.length > 0 ? (
+          <div className="space-y-3">
+            {filteredTransactions.map((transaction) => (
+              <div 
+                key={transaction.id} 
+                className="bg-card border rounded-lg p-3 space-y-2"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-2 h-2 rounded-full"
+                        style={{ backgroundColor: getCategoryColor(transaction.category) }}
+                      />
+                      <span className="font-medium">{getCategoryName(transaction.category)}</span>
+                    </div>
+                    {transaction.description && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {transaction.description}
+                      </p>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <div>{formatAmount(transaction.amount, transaction.type)}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {format(transaction.date, 'MMM dd, yyyy')}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-wrap gap-1">
+                    {transaction.tags && transaction.tags.length > 0 && 
+                      transaction.tags.map((tag, index) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))
+                    }
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onDeleteTransaction(transaction.id)}
+                    className="h-8 w-8 p-0"
+                  >
+                    <TrashIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-10 text-center border rounded-md bg-slate-50">
+            <div className="text-3xl mb-2 text-gray-300">📋</div>
+            <h3 className="text-lg font-medium mb-1">No transactions found</h3>
+            <p className="text-gray-500 mb-4">
+              {searchTerm || typeFilter !== 'all' || categoryFilter !== 'all'
+                ? "Try changing your filters or search term"
+                : "Add your first transaction to get started"}
+            </p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      {/* Filters and search */}
+      {/* Desktop Filters and search */}
       <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
         <div className="relative flex-1">
           <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
@@ -162,7 +286,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
         </div>
       </div>
 
-      {/* Transactions Table */}
+      {/* Desktop Transactions Table */}
       {filteredTransactions.length > 0 ? (
         <div className="border rounded-md">
           <Table>
