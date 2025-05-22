@@ -104,12 +104,11 @@ export const PersonalityQuiz = () => {
   };
 
   const calculateResult = () => {
-    const counts: Record<PersonalityType, number> = {
+    const counts: Record<string, number> = {
       saver: 0,
       spender: 0,
       avoider: 0,
-      monk: 0,
-      null: 0
+      monk: 0
     };
     
     Object.values(answers).forEach(answer => {
@@ -119,8 +118,8 @@ export const PersonalityQuiz = () => {
     let maxCount = 0;
     let personalityResult: PersonalityType = null;
     
-    (Object.keys(counts) as PersonalityType[]).forEach(personality => {
-      if (personality !== 'null' && counts[personality] > maxCount) {
+    (Object.keys(counts) as Array<Exclude<PersonalityType, null>>).forEach(personality => {
+      if (counts[personality] > maxCount) {
         maxCount = counts[personality];
         personalityResult = personality;
       }

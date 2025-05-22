@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { Building2, Trophy, Gamepad2, Award } from 'lucide-react';
+import { Building2, Trophy, Gamepad2, Award, Star, Zap, Crown, Rocket, MapPin, Heart, Building, CircleDashed } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -421,7 +420,7 @@ export const GamifiedFeatures = () => {
                   
                   {challenge.completed ? (
                     <div className="mt-2 flex items-center text-primary">
-                      <Check className="h-4 w-4 mr-1" />
+                      <CircleDashed className="h-4 w-4 mr-1" />
                       <span className="text-sm">Completed!</span>
                     </div>
                   ) : (
