@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -64,7 +63,7 @@ const personalityDescriptions = {
   },
   avoider: {
     title: 'The Avoider',
-    description: 'You tend to keep financial matters at arm's length, preferring not to think about money details too often.',
+    description: "You tend to keep financial matters at arm's length, preferring not to think about money details too often.",
     icon: BookOpen,
     tips: 'Start with small, manageable financial tasks before tackling bigger issues.'
   },
@@ -72,7 +71,7 @@ const personalityDescriptions = {
     title: 'The Monk',
     description: 'You have a minimalist relationship with money, seeing it as a tool rather than a goal. Material possessions matter little to you.',
     icon: Coins,
-    tips: 'Your mindful approach is powerful, but ensure you're planning adequately for future needs.'
+    tips: "Your mindful approach is powerful, but ensure you're planning adequately for future needs."
   }
 };
 
