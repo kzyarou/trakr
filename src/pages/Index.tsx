@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { useToast } from "@/hooks/use-toast";
 import { useMediaQuery } from '@/hooks/use-mobile';
 import MobileNavbar from '@/components/MobileNavbar';
+import MobileSidebar from '@/components/MobileSidebar';
 import TransactionForm from '@/components/TransactionForm';
 import TransactionList from '@/components/TransactionList';
 import SummaryCards from '@/components/SummaryCards';
@@ -16,6 +16,13 @@ import ReportsPage from '@/components/ReportsPage';
 import MiniAppsGrid from '@/components/MiniAppsGrid';
 import FinancialAiAdvisor from '@/components/FinancialAiAdvisor';
 import AppSidebar from '@/components/AppSidebar';
+import { PersonalityQuiz } from '@/components/features/PersonalityQuiz';
+import { BehavioralStreaks } from '@/components/features/BehavioralStreaks';
+import { ShameFreeMode } from '@/components/features/ShameFreeMode';
+import { GamifiedFeatures } from '@/components/features/GamifiedFeatures';
+import { MindfulAddons } from '@/components/features/MindfulAddons';
+import { Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { 
   getTransactions, 
   saveTransactions, 
@@ -30,6 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 const Index = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [showTransactionForm, setShowTransactionForm] = useState(false);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [budgets, setBudgets] = useState(getBudgets());
   const [wallets, setWallets] = useState<Wallet[]>([]);
@@ -124,6 +132,20 @@ const Index = () => {
         
         <SidebarInset className="bg-background">
           <main className="container py-6 px-4 max-w-7xl">
+            {/* Mobile Header with Menu Button */}
+            {isMobile && (
+              <div className="mb-4 flex items-center">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => setShowMobileSidebar(true)}
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+                <h1 className="text-xl font-bold ml-2">Trakr</h1>
+              </div>
+            )}
+            
             <div className="space-y-6 pb-16">
               <div>
                 <h1 className="text-3xl font-bold tracking-tight">
@@ -136,6 +158,11 @@ const Index = () => {
                   {currentPage === 'wallets' && 'Wallets'}
                   {currentPage === 'tools' && 'Mini Tools'}
                   {currentPage === 'ai-advisor' && 'Financial AI Advisor'}
+                  {currentPage === 'personality-quiz' && 'Financial Personality Quiz'}
+                  {currentPage === 'streaks' && 'Behavioral Streaks'}
+                  {currentPage === 'shame-free' && 'Shame-Free Mode'}
+                  {currentPage === 'gamified' && 'Gamified Features'}
+                  {currentPage === 'mindful' && 'Mindful Add-Ons'}
                 </h1>
                 <p className="text-muted-foreground">
                   {currentPage === 'dashboard' && 'Overview of your financial status'}
@@ -147,6 +174,11 @@ const Index = () => {
                   {currentPage === 'wallets' && 'Manage your accounts and balances'}
                   {currentPage === 'tools' && 'Useful financial calculators and tools'}
                   {currentPage === 'ai-advisor' && 'Get personalized financial advice'}
+                  {currentPage === 'personality-quiz' && 'Discover your financial personality type'}
+                  {currentPage === 'streaks' && 'Build positive financial habits'}
+                  {currentPage === 'shame-free' && 'Positive, non-judgmental guidance'}
+                  {currentPage === 'gamified' && 'Make finance fun through games'}
+                  {currentPage === 'mindful' && 'Connect finances with well-being'}
                 </p>
               </div>
 
@@ -250,6 +282,37 @@ const Index = () => {
                   <p className="text-gray-500 mt-2">Customization options coming soon!</p>
                 </div>
               )}
+
+              {/* New feature pages */}
+              {currentPage === 'personality-quiz' && (
+                <div className="animate-fade-in">
+                  <PersonalityQuiz />
+                </div>
+              )}
+
+              {currentPage === 'streaks' && (
+                <div className="animate-fade-in">
+                  <BehavioralStreaks />
+                </div>
+              )}
+
+              {currentPage === 'shame-free' && (
+                <div className="animate-fade-in">
+                  <ShameFreeMode />
+                </div>
+              )}
+
+              {currentPage === 'gamified' && (
+                <div className="animate-fade-in">
+                  <GamifiedFeatures />
+                </div>
+              )}
+
+              {currentPage === 'mindful' && (
+                <div className="animate-fade-in">
+                  <MindfulAddons />
+                </div>
+              )}
             </div>
           </main>
         </SidebarInset>
@@ -264,8 +327,15 @@ const Index = () => {
         />
       )}
 
+      {/* Mobile sidebar */}
+      <MobileSidebar
+        open={showMobileSidebar}
+        onOpenChange={setShowMobileSidebar}
+        onNavigate={setCurrentPage}
+      />
+
       {/* Add padding at the bottom to account for mobile navigation */}
-      {isMobile && <div className="h-20" />}
+      {isMobile && <div className="h-16" />}
 
       <TransactionForm 
         open={showTransactionForm}

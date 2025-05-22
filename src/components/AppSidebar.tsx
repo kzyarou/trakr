@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Moon, Sun, MessagesSquare, Home, Wallet, PieChart, Settings, Lightbulb, BarChart2 } from 'lucide-react';
+import { Moon, Sun, MessagesSquare, Home, Wallet, PieChart, Settings, Lightbulb, BarChart2, Trophy, Heart, UserIcon } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -96,6 +96,65 @@ export default function AppSidebar({ currentPage, onNavigate }: AppSidebarProps)
                 >
                   <MessagesSquare className="h-4 w-4" />
                   <span>Financial AI Advisor</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        
+        <Separator className="my-4" />
+        
+        <SidebarGroup>
+          <SidebarGroupLabel>Features</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={currentPage === 'personality-quiz'}
+                  onClick={() => handleNavigate('personality-quiz')}
+                >
+                  <UserIcon className="h-4 w-4" />
+                  <span>Personality Quiz</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={currentPage === 'streaks'}
+                  onClick={() => handleNavigate('streaks')}
+                >
+                  <Trophy className="h-4 w-4" />
+                  <span>Behavioral Streaks</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={currentPage === 'shame-free'}
+                  onClick={() => handleNavigate('shame-free')}
+                >
+                  <Heart className="h-4 w-4" />
+                  <span>Shame-Free Mode</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={currentPage === 'gamified'}
+                  onClick={() => handleNavigate('gamified')}
+                >
+                  <Trophy className="h-4 w-4" />
+                  <span>Gamified Features</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={currentPage === 'mindful'}
+                  onClick={() => handleNavigate('mindful')}
+                >
+                  <Heart className="h-4 w-4" />
+                  <span>Mindful Add-Ons</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
