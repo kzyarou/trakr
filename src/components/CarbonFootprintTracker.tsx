@@ -107,8 +107,7 @@ export default function CarbonFootprintTracker() {
                 </div>
                 <Progress 
                   value={category.percentage} 
-                  className="h-1.5" 
-                  indicatorClassName={getColorForPercentage(category.percentage)}
+                  className={`h-1.5 ${getColorForPercentage(category.percentage)}`}
                 />
               </div>
             ))}

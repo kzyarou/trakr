@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Moon, Sun, MessagesSquare, Home, Wallet, PieChart, Settings, Lightbulb } from 'lucide-react';
+import { Moon, Sun, MessagesSquare, Home, Wallet, PieChart, Settings, Lightbulb, BarChart2 } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -84,7 +84,7 @@ export default function AppSidebar({ currentPage, onNavigate }: AppSidebarProps)
                   isActive={currentPage === 'reports'}
                   onClick={() => handleNavigate('reports')}
                 >
-                  <PieChart className="h-4 w-4" />
+                  <BarChart2 className="h-4 w-4" />
                   <span>Reports</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -132,7 +132,7 @@ export default function AppSidebar({ currentPage, onNavigate }: AppSidebarProps)
         </SidebarGroup>
       </SidebarContent>
       
-      <SidebarFooter className="p-4">
+      <SidebarFooter className="p-4 space-y-4">
         <Button 
           variant="outline" 
           size="sm" 
@@ -151,6 +151,10 @@ export default function AppSidebar({ currentPage, onNavigate }: AppSidebarProps)
             </>
           )}
         </Button>
+        
+        <div className="text-xs text-center text-muted-foreground">
+          Trakr v1.0
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

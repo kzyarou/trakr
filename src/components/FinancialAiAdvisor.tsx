@@ -1,173 +1,160 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, ArrowLeft, Bot } from 'lucide-react';
+import { ArrowLeft, Send, Robot, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 
 interface Message {
-  id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
 }
 
-const INITIAL_MESSAGE: Message = {
-  id: '1',
-  role: 'assistant',
-  content: 'Hello! I\'m your financial advisor. I\'m here to help you manage your money better. What financial questions do you have today?',
-  timestamp: new Date(),
-};
+interface FinancialAiAdvisorProps {
+  onBack?: () => void;
+}
 
-export default function FinancialAiAdvisor({ onBack }: { onBack: () => void }) {
-  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
+export default function FinancialAiAdvisor({ onBack }: FinancialAiAdvisorProps) {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      role: 'assistant',
+      content: 'Hi there! I\'m your friendly financial advisor. How can I help you manage your money better today?',
+      timestamp: new Date()
+    }
+  ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Scroll to bottom whenever messages change
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Mock AI response function - in a real app, this would be a call to an API
-  const generateAiResponse = (userMessage: string): Promise<string> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const responses = [
-          "Based on your financial situation, I'd recommend creating a budget that follows the 50/30/20 rule: 50% for needs, 30% for wants, and 20% for savings and debt payments.",
-          "Looking at your expenses, I notice you might be spending more than average on dining out. Consider cooking at home more often to save money.",
-          "For your savings goal, try setting up automatic transfers to a separate account right after payday. You won't miss what you don't see!",
-          "Remember to build an emergency fund that covers 3-6 months of expenses before focusing on other financial goals.",
-          "When tackling debt, you might want to try either the avalanche method (highest interest first) or the snowball method (smallest balance first).",
-          "I see you're interested in investing. For beginners, index funds are a great low-cost way to get started with diversification.",
-          "That's a great question! To improve your credit score, focus on paying bills on time, keeping credit card balances low, and avoiding opening too many new accounts at once."
-        ];
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        resolve(randomResponse);
-      }, 1500); // Simulating API delay
-    });
-  };
-
-  const handleSendMessage = async () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!input.trim()) return;
     
+    // Add user message
     const userMessage: Message = {
-      id: Date.now().toString(),
       role: 'user',
       content: input,
-      timestamp: new Date(),
+      timestamp: new Date()
     };
     
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
     
-    try {
-      const aiResponse = await generateAiResponse(input);
+    // Simulate AI response
+    setTimeout(() => {
+      const aiResponses = [
+        "That's a great financial goal. I suggest setting aside 20% of your income each month towards it.",
+        "Based on your spending habits, you might want to consider creating a budget for entertainment expenses.",
+        "Have you thought about setting up an emergency fund? I recommend saving enough to cover 3-6 months of expenses.",
+        "Looking at your income and expenses, you could potentially save more by reducing your subscription services.",
+        "That's a common financial concern! One strategy is to prioritize high-interest debt first, using the avalanche method.",
+        "Sometimes the simplest approach works best: track every peso you spend for a week to see where your money is really going.",
+        "Remember that small, consistent savings add up over time. Even ₱100 per day becomes ₱36,500 in a year!",
+        "For your specific situation, I'd recommend the 50/30/20 rule: 50% for needs, 30% for wants, and 20% for savings and debt payment."
+      ];
       
-      setMessages(prev => [
-        ...prev, 
-        {
-          id: Date.now().toString(),
-          role: 'assistant',
-          content: aiResponse,
-          timestamp: new Date(),
-        }
-      ]);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to get a response. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
+      const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+      
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: randomResponse,
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, assistantMessage]);
       setIsLoading(false);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
+    }, 1000);
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-background border rounded-lg overflow-hidden">
+      {/* Header */}
       <div className="flex items-center justify-between p-4 border-b">
-        <Button variant="ghost" size="icon" onClick={onBack}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <h2 className="text-lg font-semibold">Financial AI Advisor</h2>
-        <div className="w-8" /> {/* Empty div for spacing */}
+        <div className="flex items-center space-x-2">
+          {onBack && (
+            <Button variant="ghost" size="icon" onClick={onBack} className="mr-1">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          )}
+          <Robot className="h-5 w-5 text-primary" />
+          <h2 className="font-semibold">Financial Advisor</h2>
+        </div>
+        <div className="text-sm text-muted-foreground">
+          Ask me anything about your finances!
+        </div>
       </div>
-
-      <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-[calc(100vh-200px)] p-4" ref={scrollAreaRef}>
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+      
+      {/* Messages */}
+      <ScrollArea className="flex-1 p-4">
+        <div className="space-y-4">
+          {messages.map((message, index) => (
+            <div 
+              key={index} 
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <div 
+                className={`max-w-[80%] rounded-lg p-3 ${
+                  message.role === 'user' 
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'bg-muted'
+                }`}
               >
-                <Card className={`max-w-[80%] ${message.role === 'user' ? 'bg-primary text-primary-foreground' : ''}`}>
-                  {message.role === 'assistant' && (
-                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center absolute -left-4 -top-2">
-                      <Bot className="h-4 w-4 text-white" />
-                    </div>
+                <div className="flex items-center space-x-2 mb-1">
+                  {message.role === 'assistant' ? (
+                    <Robot className="h-4 w-4" />
+                  ) : (
+                    <User className="h-4 w-4" />
                   )}
-                  <CardContent className="p-3">
-                    <p>{message.content}</p>
-                    <div className="text-xs opacity-70 mt-1 text-right">
-                      {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                  </CardContent>
-                </Card>
+                  <span className="text-xs font-medium">
+                    {message.role === 'user' ? 'You' : 'Financial Advisor'}
+                  </span>
+                </div>
+                <p className="text-sm">{message.content}</p>
+                <p className="text-xs opacity-70 text-right mt-1">
+                  {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </p>
               </div>
-            ))}
-            {isLoading && (
-              <div className="flex justify-start">
-                <Card>
-                  <CardContent className="p-3">
-                    <div className="flex space-x-2">
-                      <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                      <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '200ms' }}></div>
-                      <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '400ms' }}></div>
-                    </div>
-                  </CardContent>
-                </Card>
+            </div>
+          ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="bg-muted max-w-[80%] rounded-lg p-4">
+                <div className="flex items-center space-x-2">
+                  <div className="flex space-x-1">
+                    <div className="h-2 w-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="h-2 w-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                    <div className="h-2 w-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '600ms' }}></div>
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
-        </ScrollArea>
-      </div>
-
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+      </ScrollArea>
+      
+      {/* Input */}
       <div className="p-4 border-t">
-        <div className="flex items-end space-x-2">
-          <Textarea
-            placeholder="Ask me anything about your finances..."
+        <form onSubmit={handleSubmit} className="flex space-x-2">
+          <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyPress}
-            className="min-h-[60px] resize-none"
+            placeholder="Ask about budgeting, saving, debt..."
+            className="flex-1"
             disabled={isLoading}
           />
-          <Button 
-            size="icon" 
-            onClick={handleSendMessage} 
-            disabled={!input.trim() || isLoading}
-          >
+          <Button type="submit" size="icon" disabled={!input.trim() || isLoading}>
             <Send className="h-4 w-4" />
           </Button>
-        </div>
-        <div className="text-xs text-center mt-2 text-muted-foreground">
-          Tip: Press Enter to send, Shift+Enter for a new line
-        </div>
+        </form>
       </div>
     </div>
   );

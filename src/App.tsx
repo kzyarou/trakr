@@ -34,7 +34,7 @@ const ProtectedRoute = ({ children, requireOnboarding = true }: { children: JSX.
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="light">
+    <ThemeProvider>
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
