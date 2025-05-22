@@ -127,42 +127,69 @@
   
   /* Improve spacing on mobile */
   .container {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    max-width: 100% !important;
   }
   
   /* Add padding for mobile footer */
   main {
-    padding-bottom: 70px;
+    padding-bottom: 70px !important;
+  }
+  
+  /* Make truncated text more mobile friendly */
+  .truncate {
+    max-width: 150px;
+  }
+  
+  /* Better touch targets */
+  button, a {
+    min-height: 42px;
+  }
+  
+  /* Improve table display on mobile */
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  /* Better spacing in forms */
+  form > div {
+    margin-bottom: 16px;
+  }
+  
+  /* Chart optimizations */
+  .recharts-wrapper {
+    margin: 0 auto;
   }
 }
 
-/* Shame-Free Mode Styles */
-.shame-free-mode {
+/* Persistent session classes */
+[data-shame-free="true"] {
   /* Override destructive colors with more neutral ones */
   --destructive: 25 95% 53%; /* Orange instead of red */
   --destructive-foreground: 0 0% 98%;
 }
 
-.shame-free-mode [data-negative-text="true"] {
+[data-shame-free="true"] [data-negative-text="true"] {
   color: hsl(var(--muted-foreground));
 }
 
-.shame-free-mode .warning-text {
+[data-shame-free="true"] .warning-text {
   color: hsl(var(--primary));
 }
 
-.shame-free-mode .alert-destructive {
+[data-shame-free="true"] .alert-destructive {
   background-color: hsl(var(--muted));
   border-color: hsl(var(--border));
 }
 
-.shame-free-mode .negative-icon {
+[data-shame-free="true"] .negative-icon {
   color: hsl(var(--muted-foreground));
 }
 
 /* Override progress colors in shame-free mode */
-.shame-free-mode .progress-danger {
+[data-shame-free="true"] .progress-danger {
   background-color: hsl(var(--muted));
 }
 

@@ -21,6 +21,7 @@ import { BehavioralStreaks } from '@/components/features/BehavioralStreaks';
 import { ShameFreeMode } from '@/components/features/ShameFreeMode';
 import { GamifiedFeatures } from '@/components/features/GamifiedFeatures';
 import { MindfulAddons } from '@/components/features/MindfulAddons';
+import SettingsPage from '@/components/SettingsPage';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -48,6 +49,15 @@ const Index = () => {
   useEffect(() => {
     setTransactions(getTransactions());
     setWallets(getWallets());
+    
+    // Load user settings from localStorage for persistent session
+    const savedTheme = localStorage.getItem('trakr-theme');
+    const savedCurrency = localStorage.getItem('trakr-currency') || 'USD';
+    const savedLanguage = localStorage.getItem('trakr-language') || 'en-US';
+    const shameFreeMode = localStorage.getItem('trakr-shame-free') === 'true';
+    
+    // Apply saved settings (to be used by the SettingsPage component)
+    document.documentElement.setAttribute('data-shame-free', shameFreeMode ? 'true' : 'false');
   }, []);
 
   // Calculate summary statistics
@@ -131,10 +141,10 @@ const Index = () => {
         )}
         
         <SidebarInset className="bg-background">
-          <main className="container py-6 px-4 max-w-7xl">
+          <main className="container py-4 px-3 md:py-6 md:px-4 max-w-7xl">
             {/* Mobile Header with Menu Button */}
             {isMobile && (
-              <div className="mb-4 flex items-center">
+              <div className="mb-3 flex items-center">
                 <Button 
                   variant="ghost" 
                   size="icon"
@@ -146,9 +156,9 @@ const Index = () => {
               </div>
             )}
             
-            <div className="space-y-6 pb-16">
+            <div className="space-y-4 md:space-y-6 pb-16">
               <div>
-                <h1 className="text-3xl font-bold tracking-tight">
+                <h1 className="text-xl md:text-3xl font-bold tracking-tight">
                   {currentPage === 'dashboard' && 'Dashboard'}
                   {currentPage === 'transactions' && 'Transactions'}
                   {currentPage === 'budgets' && 'Budgets'}
@@ -164,7 +174,7 @@ const Index = () => {
                   {currentPage === 'gamified' && 'Gamified Features'}
                   {currentPage === 'mindful' && 'Mindful Add-Ons'}
                 </h1>
-                <p className="text-muted-foreground">
+                <p className="text-sm md:text-base text-muted-foreground">
                   {currentPage === 'dashboard' && 'Overview of your financial status'}
                   {currentPage === 'transactions' && 'Manage your income and expenses'}
                   {currentPage === 'budgets' && 'Track your spending against budgets'}
@@ -187,11 +197,11 @@ const Index = () => {
                   <FinancialAiAdvisor onBack={() => setCurrentPage('dashboard')} />
                 </div>
               ) : currentPage === 'dashboard' && (
-                <div className="space-y-6 animate-fade-in">
+                <div className="space-y-4 md:space-y-6 animate-fade-in">
                   {/* Summary Cards */}
                   <SummaryCards summary={summary} />
                   
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="grid gap-4 md:gap-6 md:grid-cols-2">
                     {/* Category Distribution */}
                     <CategoryPieChart summary={summary} />
                     
@@ -203,7 +213,7 @@ const Index = () => {
                   </div>
                   
                   {/* Recent Transactions */}
-                  <div className="space-y-4">
+                  <div className="space-y-3 md:space-y-4">
                     <h2 className="text-lg font-semibold tracking-tight">Recent Transactions</h2>
                     <TransactionList 
                       transactions={transactions.slice(0, 5)}
@@ -216,27 +226,27 @@ const Index = () => {
               {currentPage === 'transactions' && (
                 <div className="animate-fade-in">
                   <Tabs defaultValue="all" className="w-full">
-                    <TabsList className="mb-4">
+                    <TabsList className="mb-4 w-full overflow-x-auto no-scrollbar">
                       <TabsTrigger value="all">All</TabsTrigger>
                       <TabsTrigger value="income">Income</TabsTrigger>
                       <TabsTrigger value="expense">Expenses</TabsTrigger>
                     </TabsList>
                     
-                    <TabsContent value="all" className="space-y-4">
+                    <TabsContent value="all" className="space-y-3 md:space-y-4">
                       <TransactionList 
                         transactions={transactions}
                         onDeleteTransaction={handleDeleteTransaction}
                       />
                     </TabsContent>
                     
-                    <TabsContent value="income" className="space-y-4">
+                    <TabsContent value="income" className="space-y-3 md:space-y-4">
                       <TransactionList 
                         transactions={transactions.filter(tx => tx.type === 'income')}
                         onDeleteTransaction={handleDeleteTransaction}
                       />
                     </TabsContent>
                     
-                    <TabsContent value="expense" className="space-y-4">
+                    <TabsContent value="expense" className="space-y-3 md:space-y-4">
                       <TransactionList 
                         transactions={transactions.filter(tx => tx.type === 'expense')}
                         onDeleteTransaction={handleDeleteTransaction}
@@ -277,9 +287,8 @@ const Index = () => {
               )}
 
               {currentPage === 'settings' && (
-                <div className="animate-fade-in text-center py-20">
-                  <h2 className="text-xl font-semibold">Settings & Preferences</h2>
-                  <p className="text-gray-500 mt-2">Customization options coming soon!</p>
+                <div className="animate-fade-in">
+                  <SettingsPage />
                 </div>
               )}
 

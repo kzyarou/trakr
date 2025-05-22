@@ -1,7 +1,7 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { 
   LineChart, 
   BarChart,
@@ -20,6 +20,7 @@ import {
 import { Transaction, TransactionType } from '@/lib/types';
 import { format, subDays, startOfMonth, endOfMonth, isWithinInterval, differenceInDays } from 'date-fns';
 import { defaultCategories } from '@/lib/data';
+import { useMediaQuery } from '@/hooks/use-mobile';
 
 interface ReportsPageProps {
   transactions: Transaction[];
@@ -41,6 +42,8 @@ const CHART_COLORS = [
 const ReportsPage: React.FC<ReportsPageProps> = ({ transactions }) => {
   const [timeRange, setTimeRange] = useState<'7days' | '30days' | '90days' | 'year'>('30days');
   const [reportType, setReportType] = useState<'spending' | 'income' | 'cashflow'>('spending');
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const chartHeight = isMobile ? 240 : 300;
 
   // Filter transactions by time range
   const getFilteredTransactions = () => {
@@ -227,14 +230,62 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ transactions }) => {
   const spendingOverTime = getSpendingOverTime();
   const spendingByPaymentMethod = getSpendingByPaymentMethod();
 
+  // Mobile optimized pie chart labels
+  const renderPieChartLabel = ({ name, percent }: any) => {
+    if (isMobile) {
+      // For mobile, show shorter labels
+      const shortName = name.length > 10 ? `${name.substring(0, 8)}...` : name;
+      return `${shortName}: ${(percent * 100).toFixed(0)}%`;
+    }
+    return `${name}: ${(percent * 100).toFixed(0)}%`;
+  };
+
+  // Mobile friendly key stats
+  const KeyStats = () => (
+    <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
+      <Card>
+        <CardContent className="p-3 md:p-4">
+          <div className="text-xs md:text-sm font-medium text-gray-500">Income</div>
+          <div className="text-lg md:text-2xl font-bold text-green-600">
+            {formatCurrency(stats.totalIncome)}
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent className="p-3 md:p-4">
+          <div className="text-xs md:text-sm font-medium text-gray-500">Expenses</div>
+          <div className="text-lg md:text-2xl font-bold text-red-600">
+            {formatCurrency(stats.totalExpense)}
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent className="p-3 md:p-4">
+          <div className="text-xs md:text-sm font-medium text-gray-500">Balance</div>
+          <div className={`text-lg md:text-2xl font-bold ${stats.balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+            {formatCurrency(stats.balance)}
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent className="p-3 md:p-4">
+          <div className="text-xs md:text-sm font-medium text-gray-500">Daily Avg</div>
+          <div className="text-lg md:text-2xl font-bold text-purple-600">
+            {formatCurrency(stats.averageDailySpending)}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Time Range Selector */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center flex-col sm:flex-row gap-2">
         <h2 className="text-lg font-semibold">Financial Reports</h2>
-        <div className="space-x-2">
+        <div>
           <Tabs value={timeRange} onValueChange={(value) => setTimeRange(value as any)}>
-            <TabsList>
+            <TabsList className="w-full overflow-x-auto no-scrollbar">
               <TabsTrigger value="7days">7 Days</TabsTrigger>
               <TabsTrigger value="30days">30 Days</TabsTrigger>
               <TabsTrigger value="90days">3 Months</TabsTrigger>
@@ -245,118 +296,157 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ transactions }) => {
       </div>
 
       {/* Key Statistics */}
-      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-sm font-medium text-gray-500">Income</div>
-            <div className="text-2xl font-bold text-green-600">
-              {formatCurrency(stats.totalIncome)}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-sm font-medium text-gray-500">Expenses</div>
-            <div className="text-2xl font-bold text-red-600">
-              {formatCurrency(stats.totalExpense)}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-sm font-medium text-gray-500">Balance</div>
-            <div className={`text-2xl font-bold ${stats.balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-              {formatCurrency(stats.balance)}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-sm font-medium text-gray-500">Daily Average</div>
-            <div className="text-2xl font-bold text-purple-600">
-              {formatCurrency(stats.averageDailySpending)}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <KeyStats />
 
       {/* Report Type Tabs */}
       <Tabs defaultValue={reportType} onValueChange={(value) => setReportType(value as any)}>
-        <TabsList className="mb-4">
-          <TabsTrigger value="spending">Spending Analysis</TabsTrigger>
+        <TabsList className="mb-4 w-full overflow-x-auto no-scrollbar">
+          <TabsTrigger value="spending">Spending</TabsTrigger>
           <TabsTrigger value="income">Income</TabsTrigger>
           <TabsTrigger value="cashflow">Cash Flow</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="spending" className="space-y-6">
-          {/* Spending by Category */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Spending by Category</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px]">
-                {spendingByCategory.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={spendingByCategory}
-                        dataKey="value"
-                        nameKey="name"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                      >
-                        {spendingByCategory.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color || CHART_COLORS[index % CHART_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip 
-                        formatter={(value: number) => formatCurrency(value)} 
-                        contentStyle={{ backgroundColor: 'white', borderRadius: '4px', border: '1px solid #e2e8f0' }}
-                      />
-                      <Legend layout="vertical" verticalAlign="middle" align="right" />
-                    </PieChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400">
-                    No spending data available for this time period
+        <TabsContent value="spending" className="space-y-4 md:space-y-6">
+          {/* Mobile view: Use accordion for better space management */}
+          {isMobile ? (
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="spending-by-category">
+                <AccordionTrigger className="text-base font-medium">
+                  Spending by Category
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="h-[240px] mt-2">
+                    {spendingByCategory.length > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={spendingByCategory}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={80}
+                            label={renderPieChartLabel}
+                            labelLine={!isMobile}
+                          >
+                            {spendingByCategory.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color || CHART_COLORS[index % CHART_COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip 
+                            formatter={(value: number) => formatCurrency(value)} 
+                            contentStyle={{ backgroundColor: 'white', borderRadius: '4px', border: '1px solid #e2e8f0' }}
+                          />
+                          <Legend layout="vertical" verticalAlign="bottom" align="center" />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-400">
+                        No spending data available
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-          
-          {/* Spending by Payment Method */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Spending by Payment Method</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px]">
-                {spendingByPaymentMethod.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={spendingByPaymentMethod}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis tickFormatter={(value) => formatCurrency(value)} />
-                      <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                      <Legend />
-                      <Bar dataKey="amount" fill="#805AD5" name="Amount" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400">
-                    No payment data available for this time period
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="spending-by-payment">
+                <AccordionTrigger className="text-base font-medium">
+                  Spending by Payment Method
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="h-[240px] mt-2">
+                    {spendingByPaymentMethod.length > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={spendingByPaymentMethod}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="name" />
+                          <YAxis tickFormatter={(value) => formatCurrency(value)} />
+                          <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                          <Bar dataKey="amount" fill="#805AD5" name="Amount" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-400">
+                        No payment data available
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          ) : (
+            // Desktop view: Keep regular cards
+            <>
+              {/* Spending by Category */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Spending by Category</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[300px]">
+                    {spendingByCategory.length > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={spendingByCategory}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={80}
+                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                          >
+                            {spendingByCategory.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color || CHART_COLORS[index % CHART_COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip 
+                            formatter={(value: number) => formatCurrency(value)} 
+                            contentStyle={{ backgroundColor: 'white', borderRadius: '4px', border: '1px solid #e2e8f0' }}
+                          />
+                          <Legend layout="vertical" verticalAlign="middle" align="right" />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-400">
+                        No spending data available for this time period
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Spending by Payment Method */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Spending by Payment Method</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[300px]">
+                    {spendingByPaymentMethod.length > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={spendingByPaymentMethod}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="name" />
+                          <YAxis tickFormatter={(value) => formatCurrency(value)} />
+                          <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                          <Legend />
+                          <Bar dataKey="amount" fill="#805AD5" name="Amount" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-400">
+                        No payment data available for this time period
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
         </TabsContent>
         
-        <TabsContent value="income" className="space-y-6">
+        <TabsContent value="income" className="space-y-4 md:space-y-6">
           {/* Income Over Time */}
           <Card>
             <CardHeader>
@@ -385,7 +475,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ transactions }) => {
           </Card>
         </TabsContent>
         
-        <TabsContent value="cashflow" className="space-y-6">
+        <TabsContent value="cashflow" className="space-y-4 md:space-y-6">
           {/* Cash Flow (Income vs Expenses) */}
           <Card>
             <CardHeader>
