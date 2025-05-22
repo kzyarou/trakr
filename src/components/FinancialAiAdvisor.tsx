@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Send, Robot, User } from 'lucide-react';
+import { ArrowLeft, Send, Bot, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -84,7 +84,7 @@ export default function FinancialAiAdvisor({ onBack }: FinancialAiAdvisorProps) 
               <ArrowLeft className="h-4 w-4" />
             </Button>
           )}
-          <Robot className="h-5 w-5 text-primary" />
+          <Bot className="h-5 w-5 text-primary" />
           <h2 className="font-semibold">Financial Advisor</h2>
         </div>
         <div className="text-sm text-muted-foreground">
@@ -109,7 +109,7 @@ export default function FinancialAiAdvisor({ onBack }: FinancialAiAdvisorProps) 
               >
                 <div className="flex items-center space-x-2 mb-1">
                   {message.role === 'assistant' ? (
-                    <Robot className="h-4 w-4" />
+                    <Bot className="h-4 w-4" />
                   ) : (
                     <User className="h-4 w-4" />
                   )}
