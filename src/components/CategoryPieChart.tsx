@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SummaryStats } from '@/lib/types';
 import { defaultCategories } from '@/lib/data';
 import { useMediaQuery } from '@/hooks/use-mobile';
+import { formatCurrency } from '@/utils/formatters';
 
 interface CategoryPieChartProps {
   summary: SummaryStats;
@@ -41,11 +42,12 @@ const CHART_COLORS = [
 // Custom tooltip component
 const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
+    const currencyCode = localStorage.getItem('currency') || 'USD';
     return (
       <div className="bg-white dark:bg-gray-800 p-2 shadow rounded border text-sm">
         <p className="font-medium">{payload[0].name}</p>
         <p className="text-gray-700 dark:text-gray-300">
-          ${payload[0].value.toFixed(2)}
+          {formatCurrency(payload[0].value, currencyCode)}
         </p>
       </div>
     );
@@ -56,6 +58,7 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
 
 const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ summary }) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const currencyCode = localStorage.getItem('currency') || 'USD';
   
   // Prepare data for the pie chart
   const pieData = Object.entries(summary.categoryTotals).map(([categoryId, amount]) => {
