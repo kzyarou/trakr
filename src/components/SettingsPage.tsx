@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useTheme } from '@/hooks/use-theme';
-import { Input } from '@/components/ui/input';
 import { useMediaQuery } from '@/hooks/use-mobile';
 
 const SettingsPage = () => {
@@ -24,10 +23,6 @@ const SettingsPage = () => {
   const [backupFrequency, setBackupFrequency] = useState('weekly');
   const [exportFormat, setExportFormat] = useState('csv');
   
-  // User profile
-  const [displayName, setDisplayName] = useState('');
-  const [email, setEmail] = useState('');
-  
   // Load settings from localStorage on component mount
   useEffect(() => {
     // Load persistent settings
@@ -37,8 +32,6 @@ const SettingsPage = () => {
     const savedShameFreeMode = localStorage.getItem('trakr-shame-free');
     const savedBackupFrequency = localStorage.getItem('trakr-backup-frequency');
     const savedExportFormat = localStorage.getItem('trakr-export-format');
-    const savedDisplayName = localStorage.getItem('trakr-display-name');
-    const savedEmail = localStorage.getItem('trakr-email');
     
     if (savedCurrency) setCurrency(savedCurrency);
     if (savedLanguage) setLanguage(savedLanguage);
@@ -46,8 +39,6 @@ const SettingsPage = () => {
     if (savedShameFreeMode !== null) setShameFreeMode(savedShameFreeMode === 'true');
     if (savedBackupFrequency) setBackupFrequency(savedBackupFrequency);
     if (savedExportFormat) setExportFormat(savedExportFormat);
-    if (savedDisplayName) setDisplayName(savedDisplayName);
-    if (savedEmail) setEmail(savedEmail);
   }, []);
   
   // Format currency based on selected currency and language
@@ -70,6 +61,11 @@ const SettingsPage = () => {
         element.textContent = formatCurrency(parseFloat(value));
       }
     });
+
+    // Dispatch event to notify other components of language change
+    window.dispatchEvent(new CustomEvent('language-changed', { 
+      detail: { language } 
+    }));
   }, [currency, language]);
   
   // Save settings to localStorage
@@ -80,8 +76,6 @@ const SettingsPage = () => {
     localStorage.setItem('trakr-shame-free', String(shameFreeMode));
     localStorage.setItem('trakr-backup-frequency', backupFrequency);
     localStorage.setItem('trakr-export-format', exportFormat);
-    localStorage.setItem('trakr-display-name', displayName);
-    localStorage.setItem('trakr-email', email);
     
     // Apply shame-free mode to the document
     document.documentElement.setAttribute('data-shame-free', shameFreeMode ? 'true' : 'false');
@@ -92,9 +86,7 @@ const SettingsPage = () => {
         currency,
         language,
         notifications,
-        shameFreeMode,
-        displayName,
-        email
+        shameFreeMode
       } 
     }));
     
@@ -189,9 +181,7 @@ const SettingsPage = () => {
       <Tabs defaultValue="preferences" className="w-full">
         <TabsList className="w-full mb-6 overflow-x-auto no-scrollbar">
           <TabsTrigger value="preferences">Preferences</TabsTrigger>
-          <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="data">Data Management</TabsTrigger>
-          <TabsTrigger value="about">About</TabsTrigger>
         </TabsList>
         
         <TabsContent value="preferences" className="space-y-4">
@@ -283,40 +273,6 @@ const SettingsPage = () => {
           </Card>
         </TabsContent>
         
-        <TabsContent value="profile" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">User Profile</CardTitle>
-              <CardDescription>Manage your personal information</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="display-name">Display Name</Label>
-                <Input 
-                  id="display-name" 
-                  placeholder="Your display name" 
-                  value={displayName} 
-                  onChange={(e) => setDisplayName(e.target.value)} 
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input 
-                  id="email" 
-                  type="email"
-                  placeholder="your.email@example.com" 
-                  value={email} 
-                  onChange={(e) => setEmail(e.target.value)} 
-                />
-              </div>
-            </CardContent>
-            <CardFooter className={isMobile ? "flex flex-col space-y-2" : "flex justify-between"}>
-              <Button className="w-full md:w-auto" onClick={saveSettings}>Save Profile</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-        
         <TabsContent value="data" className="space-y-4">
           <Card>
             <CardHeader>
@@ -360,25 +316,6 @@ const SettingsPage = () => {
                 Clear All Data
               </Button>
             </CardFooter>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="about" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">About Trakr</CardTitle>
-              <CardDescription>Application information</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2 text-center p-4">
-                <h3 className="font-semibold text-xl">Trakr</h3>
-                <p className="text-muted-foreground">Version 1.0.0</p>
-                <p className="mt-4">A personal finance tracker focused on financial wellness and mindful spending.</p>
-                <p className="text-xs text-muted-foreground mt-6">
-                  &copy; {new Date().getFullYear()} Trakr. All rights reserved.
-                </p>
-              </div>
-            </CardContent>
           </Card>
         </TabsContent>
       </Tabs>

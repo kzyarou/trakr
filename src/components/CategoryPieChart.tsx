@@ -4,6 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recha
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SummaryStats } from '@/lib/types';
 import { defaultCategories } from '@/lib/data';
+import { useMediaQuery } from '@/hooks/use-mobile';
 
 interface CategoryPieChartProps {
   summary: SummaryStats;
@@ -41,9 +42,9 @@ const CHART_COLORS = [
 const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white p-2 shadow rounded border text-sm">
+      <div className="bg-white dark:bg-gray-800 p-2 shadow rounded border text-sm">
         <p className="font-medium">{payload[0].name}</p>
-        <p className="text-gray-700">
+        <p className="text-gray-700 dark:text-gray-300">
           ${payload[0].value.toFixed(2)}
         </p>
       </div>
@@ -54,6 +55,8 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
 };
 
 const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ summary }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  
   // Prepare data for the pie chart
   const pieData = Object.entries(summary.categoryTotals).map(([categoryId, amount]) => {
     const category = defaultCategories.find(c => c.id === categoryId);
@@ -72,11 +75,20 @@ const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ summary }) => {
           <CardTitle>Expense Breakdown</CardTitle>
         </CardHeader>
         <CardContent className="flex items-center justify-center h-[300px]">
-          <p className="text-gray-500">No expense data available</p>
+          <p className="text-muted-foreground">No expense data available</p>
         </CardContent>
       </Card>
     );
   }
+
+  // For mobile, limit and simplify data if there are too many categories
+  const displayData = isMobile && pieData.length > 5 
+    ? [...pieData.slice(0, 4), {
+        name: 'Others',
+        value: pieData.slice(4).reduce((sum, item) => sum + item.value, 0),
+        color: '#718096'
+      }]
+    : pieData;
 
   return (
     <Card>
@@ -88,15 +100,17 @@ const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ summary }) => {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={pieData}
+                data={displayData}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                outerRadius={80}
+                outerRadius={isMobile ? 70 : 80}
                 fill="#8884d8"
                 dataKey="value"
+                label={({ name, percent }) => 
+                  isMobile ? '' : `${name}: ${(percent * 100).toFixed(0)}%`}
               >
-                {pieData.map((entry, index) => (
+                {displayData.map((entry, index) => (
                   <Cell 
                     key={`cell-${index}`} 
                     fill={entry.color || CHART_COLORS[index % CHART_COLORS.length]} 
@@ -104,7 +118,12 @@ const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ summary }) => {
                 ))}
               </Pie>
               <Tooltip content={<CustomTooltip />} />
-              <Legend layout="vertical" verticalAlign="middle" align="right" />
+              <Legend 
+                layout={isMobile ? "horizontal" : "vertical"} 
+                verticalAlign={isMobile ? "bottom" : "middle"} 
+                align={isMobile ? "center" : "right"}
+                wrapperStyle={isMobile ? { fontSize: '10px' } : {}}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>

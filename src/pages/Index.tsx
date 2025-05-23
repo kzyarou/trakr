@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { useToast } from "@/hooks/use-toast";
@@ -35,6 +34,7 @@ import {
 } from '@/lib/data';
 import { Transaction, Wallet } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -183,12 +183,6 @@ const Index = () => {
                     </Button>
                     <h1 className="text-xl font-bold">Trakr</h1>
                   </div>
-                  <Button 
-                    size="sm" 
-                    onClick={() => setShowTransactionForm(true)}
-                  >
-                    Add
-                  </Button>
                 </div>
               </div>
             )}
@@ -196,177 +190,179 @@ const Index = () => {
             {/* Add padding for mobile header */}
             {isMobile && <div className="h-14" />}
             
-            <div className={`space-y-4 md:space-y-6 ${isMobile ? 'pb-20' : ''}`}>
-              <div>
-                <h1 className="text-xl md:text-3xl font-bold tracking-tight">
-                  {currentPage === 'dashboard' && 'Dashboard'}
-                  {currentPage === 'transactions' && 'Transactions'}
-                  {currentPage === 'budgets' && 'Budgets'}
-                  {currentPage === 'reports' && 'Reports'}
-                  {currentPage === 'settings' && 'Settings'}
-                  {currentPage === 'habits' && 'Habits'}
-                  {currentPage === 'wallets' && 'Wallets'}
-                  {currentPage === 'tools' && 'Mini Tools'}
-                  {currentPage === 'ai-advisor' && 'Financial AI Advisor'}
-                  {currentPage === 'personality-quiz' && 'Financial Personality Quiz'}
-                  {currentPage === 'streaks' && 'Behavioral Streaks'}
-                  {currentPage === 'shame-free' && 'Shame-Free Mode'}
-                  {currentPage === 'gamified' && 'Gamified Features'}
-                  {currentPage === 'mindful' && 'Mindful Add-Ons'}
-                </h1>
-                <p className="text-sm md:text-base text-muted-foreground">
-                  {currentPage === 'dashboard' && 'Overview of your financial status'}
-                  {currentPage === 'transactions' && 'Manage your income and expenses'}
-                  {currentPage === 'budgets' && 'Track your spending against budgets'}
-                  {currentPage === 'reports' && 'Analyze your financial patterns'}
-                  {currentPage === 'settings' && 'Customize your experience'}
-                  {currentPage === 'habits' && 'Link habits to financial goals'}
-                  {currentPage === 'wallets' && 'Manage your accounts and balances'}
-                  {currentPage === 'tools' && 'Useful financial calculators and tools'}
-                  {currentPage === 'ai-advisor' && 'Get personalized financial advice'}
-                  {currentPage === 'personality-quiz' && 'Discover your financial personality type'}
-                  {currentPage === 'streaks' && 'Build positive financial habits'}
-                  {currentPage === 'shame-free' && 'Positive, non-judgmental guidance'}
-                  {currentPage === 'gamified' && 'Make finance fun through games'}
-                  {currentPage === 'mindful' && 'Connect finances with well-being'}
-                </p>
-              </div>
-
-              {currentPage === 'ai-advisor' ? (
-                <div className="animate-fade-in h-[calc(100vh-200px)]">
-                  <FinancialAiAdvisor onBack={() => setCurrentPage('dashboard')} />
+            <ScrollArea className={`${isMobile ? 'h-[calc(100vh-130px)]' : 'h-[calc(100vh-20px)]'} no-scrollbar`}>
+              <div className="space-y-4 md:space-y-6 pb-6">
+                <div>
+                  <h1 className="text-xl md:text-3xl font-bold tracking-tight">
+                    {currentPage === 'dashboard' && 'Dashboard'}
+                    {currentPage === 'transactions' && 'Transactions'}
+                    {currentPage === 'budgets' && 'Budgets'}
+                    {currentPage === 'reports' && 'Reports'}
+                    {currentPage === 'settings' && 'Settings'}
+                    {currentPage === 'habits' && 'Habits'}
+                    {currentPage === 'wallets' && 'Wallets'}
+                    {currentPage === 'tools' && 'Mini Tools'}
+                    {currentPage === 'ai-advisor' && 'Financial AI Advisor'}
+                    {currentPage === 'personality-quiz' && 'Financial Personality Quiz'}
+                    {currentPage === 'streaks' && 'Behavioral Streaks'}
+                    {currentPage === 'shame-free' && 'Shame-Free Mode'}
+                    {currentPage === 'gamified' && 'Gamified Features'}
+                    {currentPage === 'mindful' && 'Mindful Add-Ons'}
+                  </h1>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    {currentPage === 'dashboard' && 'Overview of your financial status'}
+                    {currentPage === 'transactions' && 'Manage your income and expenses'}
+                    {currentPage === 'budgets' && 'Track your spending against budgets'}
+                    {currentPage === 'reports' && 'Analyze your financial patterns'}
+                    {currentPage === 'settings' && 'Customize your experience'}
+                    {currentPage === 'habits' && 'Link habits to financial goals'}
+                    {currentPage === 'wallets' && 'Manage your accounts and balances'}
+                    {currentPage === 'tools' && 'Useful financial calculators and tools'}
+                    {currentPage === 'ai-advisor' && 'Get personalized financial advice'}
+                    {currentPage === 'personality-quiz' && 'Discover your financial personality type'}
+                    {currentPage === 'streaks' && 'Build positive financial habits'}
+                    {currentPage === 'shame-free' && 'Positive, non-judgmental guidance'}
+                    {currentPage === 'gamified' && 'Make finance fun through games'}
+                    {currentPage === 'mindful' && 'Connect finances with well-being'}
+                  </p>
                 </div>
-              ) : currentPage === 'dashboard' && (
-                <div className="space-y-4 md:space-y-6 animate-fade-in">
-                  {/* Summary Cards */}
-                  <SummaryCards summary={summary} />
-                  
-                  <div className={`${isMobile ? 'grid gap-4' : 'grid gap-4 md:gap-6 md:grid-cols-2'}`}>
-                    {/* Category Distribution */}
-                    <CategoryPieChart summary={summary} />
-                    
-                    {/* Budget Overview */}
-                    <BudgetOverview 
-                      budgets={budgets}
-                      transactions={transactions}
-                    />
+  
+                {currentPage === 'ai-advisor' ? (
+                  <div className="animate-fade-in h-[calc(100vh-200px)]">
+                    <FinancialAiAdvisor onBack={() => setCurrentPage('dashboard')} />
                   </div>
-                  
-                  {/* Recent Transactions */}
-                  <div className="space-y-3 md:space-y-4">
-                    <h2 className="text-lg font-semibold tracking-tight">Recent Transactions</h2>
-                    <TransactionList 
-                      transactions={transactions.slice(0, isMobile ? 3 : 5)}
-                      onDeleteTransaction={handleDeleteTransaction}
-                      formatCurrency={formatCurrency}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {currentPage === 'transactions' && (
-                <div className="animate-fade-in">
-                  <Tabs defaultValue="all" className="w-full">
-                    <TabsList className={`mb-4 ${isMobile ? 'w-full grid grid-cols-3' : 'w-full'} overflow-x-auto no-scrollbar`}>
-                      <TabsTrigger value="all">All</TabsTrigger>
-                      <TabsTrigger value="income">Income</TabsTrigger>
-                      <TabsTrigger value="expense">Expenses</TabsTrigger>
-                    </TabsList>
+                ) : currentPage === 'dashboard' && (
+                  <div className="space-y-4 md:space-y-6 animate-fade-in">
+                    {/* Summary Cards */}
+                    <SummaryCards summary={summary} />
                     
-                    <TabsContent value="all" className="space-y-3 md:space-y-4">
-                      <TransactionList 
+                    <div className={`${isMobile ? 'grid gap-4' : 'grid gap-4 md:gap-6 md:grid-cols-2'}`}>
+                      {/* Category Distribution */}
+                      <CategoryPieChart summary={summary} />
+                      
+                      {/* Budget Overview */}
+                      <BudgetOverview 
+                        budgets={budgets}
                         transactions={transactions}
-                        onDeleteTransaction={handleDeleteTransaction}
-                        formatCurrency={formatCurrency}
                       />
-                    </TabsContent>
+                    </div>
                     
-                    <TabsContent value="income" className="space-y-3 md:space-y-4">
+                    {/* Recent Transactions */}
+                    <div className="space-y-3 md:space-y-4">
+                      <h2 className="text-lg font-semibold tracking-tight">Recent Transactions</h2>
                       <TransactionList 
-                        transactions={transactions.filter(tx => tx.type === 'income')}
+                        transactions={transactions.slice(0, isMobile ? 3 : 5)}
                         onDeleteTransaction={handleDeleteTransaction}
                         formatCurrency={formatCurrency}
                       />
-                    </TabsContent>
-                    
-                    <TabsContent value="expense" className="space-y-3 md:space-y-4">
-                      <TransactionList 
-                        transactions={transactions.filter(tx => tx.type === 'expense')}
-                        onDeleteTransaction={handleDeleteTransaction}
-                        formatCurrency={formatCurrency}
-                      />
-                    </TabsContent>
-                  </Tabs>
-                </div>
-              )}
-
-              {currentPage === 'habits' && (
-                <div className="animate-fade-in">
-                  <HabitsTab />
-                </div>
-              )}
-
-              {currentPage === 'budgets' && (
-                <div className="animate-fade-in">
-                  <BudgetManagement transactions={transactions} />
-                </div>
-              )}
-
-              {currentPage === 'reports' && (
-                <div className="animate-fade-in">
-                  <ReportsPage transactions={transactions} />
-                </div>
-              )}
-
-              {currentPage === 'wallets' && (
-                <div className="animate-fade-in">
-                  <WalletManagement />
-                </div>
-              )}
-
-              {currentPage === 'tools' && (
-                <div className="animate-fade-in">
-                  <MiniAppsGrid />
-                </div>
-              )}
-
-              {currentPage === 'settings' && (
-                <div className="animate-fade-in">
-                  <SettingsPage />
-                </div>
-              )}
-
-              {/* New feature pages */}
-              {currentPage === 'personality-quiz' && (
-                <div className="animate-fade-in">
-                  <PersonalityQuiz />
-                </div>
-              )}
-
-              {currentPage === 'streaks' && (
-                <div className="animate-fade-in">
-                  <BehavioralStreaks />
-                </div>
-              )}
-
-              {currentPage === 'shame-free' && (
-                <div className="animate-fade-in">
-                  <ShameFreeMode />
-                </div>
-              )}
-
-              {currentPage === 'gamified' && (
-                <div className="animate-fade-in">
-                  <GamifiedFeatures />
-                </div>
-              )}
-
-              {currentPage === 'mindful' && (
-                <div className="animate-fade-in">
-                  <MindfulAddons />
-                </div>
-              )}
-            </div>
+                    </div>
+                  </div>
+                )}
+  
+                {currentPage === 'transactions' && (
+                  <div className="animate-fade-in">
+                    <Tabs defaultValue="all" className="w-full">
+                      <TabsList className={`mb-4 ${isMobile ? 'w-full grid grid-cols-3' : 'w-full'} overflow-x-auto no-scrollbar`}>
+                        <TabsTrigger value="all">All</TabsTrigger>
+                        <TabsTrigger value="income">Income</TabsTrigger>
+                        <TabsTrigger value="expense">Expenses</TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="all" className="space-y-3 md:space-y-4">
+                        <TransactionList 
+                          transactions={transactions}
+                          onDeleteTransaction={handleDeleteTransaction}
+                          formatCurrency={formatCurrency}
+                        />
+                      </TabsContent>
+                      
+                      <TabsContent value="income" className="space-y-3 md:space-y-4">
+                        <TransactionList 
+                          transactions={transactions.filter(tx => tx.type === 'income')}
+                          onDeleteTransaction={handleDeleteTransaction}
+                          formatCurrency={formatCurrency}
+                        />
+                      </TabsContent>
+                      
+                      <TabsContent value="expense" className="space-y-3 md:space-y-4">
+                        <TransactionList 
+                          transactions={transactions.filter(tx => tx.type === 'expense')}
+                          onDeleteTransaction={handleDeleteTransaction}
+                          formatCurrency={formatCurrency}
+                        />
+                      </TabsContent>
+                    </Tabs>
+                  </div>
+                )}
+  
+                {currentPage === 'habits' && (
+                  <div className="animate-fade-in">
+                    <HabitsTab />
+                  </div>
+                )}
+  
+                {currentPage === 'budgets' && (
+                  <div className="animate-fade-in">
+                    <BudgetManagement transactions={transactions} />
+                  </div>
+                )}
+  
+                {currentPage === 'reports' && (
+                  <div className="animate-fade-in">
+                    <ReportsPage transactions={transactions} />
+                  </div>
+                )}
+  
+                {currentPage === 'wallets' && (
+                  <div className="animate-fade-in">
+                    <WalletManagement />
+                  </div>
+                )}
+  
+                {currentPage === 'tools' && (
+                  <div className="animate-fade-in">
+                    <MiniAppsGrid />
+                  </div>
+                )}
+  
+                {currentPage === 'settings' && (
+                  <div className="animate-fade-in">
+                    <SettingsPage />
+                  </div>
+                )}
+  
+                {/* New feature pages */}
+                {currentPage === 'personality-quiz' && (
+                  <div className="animate-fade-in">
+                    <PersonalityQuiz />
+                  </div>
+                )}
+  
+                {currentPage === 'streaks' && (
+                  <div className="animate-fade-in">
+                    <BehavioralStreaks />
+                  </div>
+                )}
+  
+                {currentPage === 'shame-free' && (
+                  <div className="animate-fade-in">
+                    <ShameFreeMode />
+                  </div>
+                )}
+  
+                {currentPage === 'gamified' && (
+                  <div className="animate-fade-in">
+                    <GamifiedFeatures />
+                  </div>
+                )}
+  
+                {currentPage === 'mindful' && (
+                  <div className="animate-fade-in">
+                    <MindfulAddons />
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
           </main>
         </SidebarInset>
       </div>
@@ -391,7 +387,6 @@ const Index = () => {
         open={showTransactionForm}
         onOpenChange={setShowTransactionForm}
         onAddTransaction={handleAddTransaction}
-        formatCurrency={formatCurrency}
       />
     </SidebarProvider>
   );
