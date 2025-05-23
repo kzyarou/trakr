@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TipCalculator from './mini-apps/TipCalculator';
+import Calculator from './mini-apps/Calculator';
 import { MiniApp } from '@/lib/types';
 
 // Helper function to dynamically import mini-apps
@@ -10,6 +11,8 @@ const getMiniApp = (componentName: string) => {
   switch (componentName) {
     case 'TipCalculator':
       return <TipCalculator />;
+    case 'Calculator':
+      return <Calculator />;
     default:
       return <div>App not found</div>;
   }
@@ -17,6 +20,14 @@ const getMiniApp = (componentName: string) => {
 
 // Default mini-apps
 const defaultMiniApps: MiniApp[] = [
+  {
+    id: 'calculator',
+    name: 'Calculator',
+    description: 'Basic calculator',
+    icon: 'calculator',
+    component: 'Calculator',
+    active: true
+  },
   {
     id: 'tip-calculator',
     name: 'Tip Calculator',

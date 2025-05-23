@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Moon, Sun, MessageSquare, Settings, Lightbulb, X, BarChart2 } from 'lucide-react';
+import { Moon, Sun, Settings, Lightbulb, X, BarChart2 } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -31,16 +31,7 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ open, onOpenChange, onNav
         </div>
         
         <div className="flex flex-col p-4 h-full overflow-auto">
-          <div className="space-y-2">
-            <Button 
-              variant="ghost" 
-              className="w-full justify-start" 
-              onClick={() => handleNavigate('ai-advisor')}
-            >
-              <MessageSquare className="mr-2 h-5 w-5" />
-              Financial AI Advisor
-            </Button>
-            
+          <div className="space-y-2">            
             <Button 
               variant="ghost" 
               className="w-full justify-start" 
@@ -89,83 +80,53 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ open, onOpenChange, onNav
           
           <Separator className="my-4" />
           
-          <div className="space-y-4">
-            <h3 className="text-sm font-medium">New Features</h3>
+          <div className="space-y-2">
+            <h3 className="text-xs font-medium mb-2">New Features</h3>
             
-            <div className="rounded-lg border p-3">
-              <h4 className="font-medium mb-2">Personality Quiz</h4>
-              <p className="text-sm text-muted-foreground mb-2">
-                Discover if you're a Saver, Spender, Avoider, or Monk
-              </p>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="w-full" 
-                onClick={() => handleNavigate('personality-quiz')}
-              >
-                Take Quiz
-              </Button>
-            </div>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="w-full justify-start text-sm h-8" 
+              onClick={() => handleNavigate('personality-quiz')}
+            >
+              Personality Quiz
+            </Button>
             
-            <div className="rounded-lg border p-3">
-              <h4 className="font-medium mb-2">Behavioral Streaks</h4>
-              <p className="text-sm text-muted-foreground mb-2">
-                Track your financial habits with daily streaks
-              </p>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="w-full"
-                onClick={() => handleNavigate('streaks')}
-              >
-                View Streaks
-              </Button>
-            </div>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="w-full justify-start text-sm h-8"
+              onClick={() => handleNavigate('streaks')}
+            >
+              Behavioral Streaks
+            </Button>
             
-            <div className="rounded-lg border p-3">
-              <h4 className="font-medium mb-2">Shame-Free Mode</h4>
-              <p className="text-sm text-muted-foreground mb-2">
-                Positive, non-judgmental financial guidance
-              </p>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="w-full"
-                onClick={() => handleNavigate('shame-free')}
-              >
-                Enable
-              </Button>
-            </div>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="w-full justify-start text-sm h-8"
+              onClick={() => handleNavigate('shame-free')}
+            >
+              Shame-Free Mode
+            </Button>
             
-            <div className="rounded-lg border p-3">
-              <h4 className="font-medium mb-2">Gamified Features</h4>
-              <p className="text-sm text-muted-foreground mb-2">
-                Build a city, level up avatars, and more
-              </p>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="w-full"
-                onClick={() => handleNavigate('gamified')}
-              >
-                Explore
-              </Button>
-            </div>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="w-full justify-start text-sm h-8"
+              onClick={() => handleNavigate('gamified')}
+            >
+              Gamified Features
+            </Button>
             
-            <div className="rounded-lg border p-3">
-              <h4 className="font-medium mb-2">Mindful & Spiritual Add-Ons</h4>
-              <p className="text-sm text-muted-foreground mb-2">
-                Connect finances with well-being
-              </p>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="w-full"
-                onClick={() => handleNavigate('mindful')}
-              >
-                Discover
-              </Button>
-            </div>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="w-full justify-start text-sm h-8"
+              onClick={() => handleNavigate('mindful')}
+            >
+              Mindful Add-Ons
+            </Button>
           </div>
         </div>
       </SheetContent>
