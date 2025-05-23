@@ -17,7 +17,6 @@ const SettingsPage = () => {
   
   // Settings state
   const [currency, setCurrency] = useState('USD');
-  const [language, setLanguage] = useState('en-US');
   const [notifications, setNotifications] = useState(true);
   const [shameFreeMode, setShameFreeMode] = useState(false);
   const [backupFrequency, setBackupFrequency] = useState('weekly');
@@ -27,32 +26,28 @@ const SettingsPage = () => {
   useEffect(() => {
     // Load persistent settings
     const savedCurrency = localStorage.getItem('trakr-currency');
-    const savedLanguage = localStorage.getItem('trakr-language');
     const savedNotifications = localStorage.getItem('trakr-notifications');
     const savedShameFreeMode = localStorage.getItem('trakr-shame-free');
     const savedBackupFrequency = localStorage.getItem('trakr-backup-frequency');
     const savedExportFormat = localStorage.getItem('trakr-export-format');
     
     if (savedCurrency) setCurrency(savedCurrency);
-    if (savedLanguage) setLanguage(savedLanguage);
     if (savedNotifications !== null) setNotifications(savedNotifications === 'true');
     if (savedShameFreeMode !== null) setShameFreeMode(savedShameFreeMode === 'true');
     if (savedBackupFrequency) setBackupFrequency(savedBackupFrequency);
     if (savedExportFormat) setExportFormat(savedExportFormat);
   }, []);
   
-  // Format currency based on selected currency and language
+  // Format currency based on selected currency
   const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat(language, {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency
     }).format(value);
   };
 
-  // Apply language settings
+  // Apply settings
   useEffect(() => {
-    document.documentElement.lang = language.split('-')[0];
-    
     // Example of applying currency format to elements with data-currency attribute
     const currencyElements = document.querySelectorAll('[data-currency]');
     currencyElements.forEach(element => {
@@ -62,16 +57,15 @@ const SettingsPage = () => {
       }
     });
 
-    // Dispatch event to notify other components of language change
-    window.dispatchEvent(new CustomEvent('language-changed', { 
-      detail: { language } 
+    // Dispatch event to notify other components of currency change
+    window.dispatchEvent(new CustomEvent('currency-changed', { 
+      detail: { currency } 
     }));
-  }, [currency, language]);
+  }, [currency]);
   
   // Save settings to localStorage
   const saveSettings = () => {
     localStorage.setItem('trakr-currency', currency);
-    localStorage.setItem('trakr-language', language);
     localStorage.setItem('trakr-notifications', String(notifications));
     localStorage.setItem('trakr-shame-free', String(shameFreeMode));
     localStorage.setItem('trakr-backup-frequency', backupFrequency);
@@ -84,7 +78,6 @@ const SettingsPage = () => {
     window.dispatchEvent(new CustomEvent('settings-updated', { 
       detail: { 
         currency,
-        language,
         notifications,
         shameFreeMode
       } 
@@ -135,7 +128,6 @@ const SettingsPage = () => {
       streaks: localStorage.getItem('streaks'),
       settings: {
         currency,
-        language,
         theme,
         notifications,
         shameFreeMode,
@@ -227,22 +219,6 @@ const SettingsPage = () => {
                     <SelectItem value="GBP">GBP - British Pound</SelectItem>
                     <SelectItem value="JPY">JPY - Japanese Yen</SelectItem>
                     <SelectItem value="PHP">PHP - Philippine Peso</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="language-select">Language</Label>
-                <Select value={language} onValueChange={setLanguage}>
-                  <SelectTrigger id="language-select">
-                    <SelectValue placeholder="Select language" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="en-US">English (US)</SelectItem>
-                    <SelectItem value="en-GB">English (UK)</SelectItem>
-                    <SelectItem value="es">Español</SelectItem>
-                    <SelectItem value="fr">Français</SelectItem>
-                    <SelectItem value="de">Deutsch</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Moon, Sun, MessageSquare, Settings, Lightbulb, X } from 'lucide-react';
+import { Moon, Sun, MessageSquare, Settings, Lightbulb, X, BarChart2 } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -22,14 +23,12 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ open, onOpenChange, onNav
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-[300px] sm:w-[350px] p-0">
-        <SheetHeader className="p-4 border-b">
-          <div className="flex justify-between items-center">
-            <SheetTitle>Menu</SheetTitle>
-            <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-        </SheetHeader>
+        <div className="p-4 border-b flex justify-between items-center">
+          <SheetTitle>Menu</SheetTitle>
+          <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
         
         <div className="flex flex-col p-4 h-full overflow-auto">
           <div className="space-y-2">
@@ -49,6 +48,15 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ open, onOpenChange, onNav
             >
               <Lightbulb className="mr-2 h-5 w-5" />
               Mini Tools
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start" 
+              onClick={() => handleNavigate('reports')}
+            >
+              <BarChart2 className="mr-2 h-5 w-5" />
+              Reports
             </Button>
             
             <Button 
