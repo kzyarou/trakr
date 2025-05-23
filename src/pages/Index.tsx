@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { useToast } from "@/hooks/use-toast";
@@ -42,6 +43,8 @@ const Index = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [budgets, setBudgets] = useState(getBudgets());
   const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [currency, setCurrency] = useState('USD');
+  const [language, setLanguage] = useState('en-US');
   const { toast } = useToast();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -56,9 +59,33 @@ const Index = () => {
     const savedLanguage = localStorage.getItem('trakr-language') || 'en-US';
     const shameFreeMode = localStorage.getItem('trakr-shame-free') === 'true';
     
-    // Apply saved settings (to be used by the SettingsPage component)
+    setCurrency(savedCurrency);
+    setLanguage(savedLanguage);
+    
+    // Apply saved settings
     document.documentElement.setAttribute('data-shame-free', shameFreeMode ? 'true' : 'false');
+    
+    // Listen for settings updates
+    const handleSettingsUpdate = (event: CustomEvent) => {
+      const { currency: newCurrency, language: newLanguage } = event.detail;
+      setCurrency(newCurrency);
+      setLanguage(newLanguage);
+    };
+    
+    window.addEventListener('settings-updated', handleSettingsUpdate as EventListener);
+    
+    return () => {
+      window.removeEventListener('settings-updated', handleSettingsUpdate as EventListener);
+    };
   }, []);
+
+  // Format currency based on selected currency and language
+  const formatCurrency = (value: number): string => {
+    return new Intl.NumberFormat(language, {
+      style: 'currency',
+      currency: currency
+    }).format(value);
+  };
 
   // Calculate summary statistics
   const summary = calculateSummary(transactions);
@@ -90,7 +117,7 @@ const Index = () => {
     
     toast({
       title: "Transaction added",
-      description: `${transaction.type === 'income' ? 'Income' : 'Expense'} of $${transaction.amount} has been added.`,
+      description: `${transaction.type === 'income' ? 'Income' : 'Expense'} of ${formatCurrency(transaction.amount)} has been added.`,
     });
   };
 
@@ -169,7 +196,7 @@ const Index = () => {
             {/* Add padding for mobile header */}
             {isMobile && <div className="h-14" />}
             
-            <div className="space-y-4 md:space-y-6 pb-20">
+            <div className={`space-y-4 md:space-y-6 ${isMobile ? 'pb-20' : ''}`}>
               <div>
                 <h1 className="text-xl md:text-3xl font-bold tracking-tight">
                   {currentPage === 'dashboard' && 'Dashboard'}
@@ -214,7 +241,7 @@ const Index = () => {
                   {/* Summary Cards */}
                   <SummaryCards summary={summary} />
                   
-                  <div className="grid gap-4 md:gap-6 md:grid-cols-2">
+                  <div className={`${isMobile ? 'grid gap-4' : 'grid gap-4 md:gap-6 md:grid-cols-2'}`}>
                     {/* Category Distribution */}
                     <CategoryPieChart summary={summary} />
                     
@@ -229,8 +256,9 @@ const Index = () => {
                   <div className="space-y-3 md:space-y-4">
                     <h2 className="text-lg font-semibold tracking-tight">Recent Transactions</h2>
                     <TransactionList 
-                      transactions={transactions.slice(0, 5)}
+                      transactions={transactions.slice(0, isMobile ? 3 : 5)}
                       onDeleteTransaction={handleDeleteTransaction}
+                      formatCurrency={formatCurrency}
                     />
                   </div>
                 </div>
@@ -239,7 +267,7 @@ const Index = () => {
               {currentPage === 'transactions' && (
                 <div className="animate-fade-in">
                   <Tabs defaultValue="all" className="w-full">
-                    <TabsList className="mb-4 w-full overflow-x-auto no-scrollbar">
+                    <TabsList className={`mb-4 ${isMobile ? 'w-full grid grid-cols-3' : 'w-full'} overflow-x-auto no-scrollbar`}>
                       <TabsTrigger value="all">All</TabsTrigger>
                       <TabsTrigger value="income">Income</TabsTrigger>
                       <TabsTrigger value="expense">Expenses</TabsTrigger>
@@ -249,6 +277,7 @@ const Index = () => {
                       <TransactionList 
                         transactions={transactions}
                         onDeleteTransaction={handleDeleteTransaction}
+                        formatCurrency={formatCurrency}
                       />
                     </TabsContent>
                     
@@ -256,6 +285,7 @@ const Index = () => {
                       <TransactionList 
                         transactions={transactions.filter(tx => tx.type === 'income')}
                         onDeleteTransaction={handleDeleteTransaction}
+                        formatCurrency={formatCurrency}
                       />
                     </TabsContent>
                     
@@ -263,6 +293,7 @@ const Index = () => {
                       <TransactionList 
                         transactions={transactions.filter(tx => tx.type === 'expense')}
                         onDeleteTransaction={handleDeleteTransaction}
+                        formatCurrency={formatCurrency}
                       />
                     </TabsContent>
                   </Tabs>
@@ -360,6 +391,7 @@ const Index = () => {
         open={showTransactionForm}
         onOpenChange={setShowTransactionForm}
         onAddTransaction={handleAddTransaction}
+        formatCurrency={formatCurrency}
       />
     </SidebarProvider>
   );

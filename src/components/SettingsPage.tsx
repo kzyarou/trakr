@@ -50,6 +50,28 @@ const SettingsPage = () => {
     if (savedEmail) setEmail(savedEmail);
   }, []);
   
+  // Format currency based on selected currency and language
+  const formatCurrency = (value: number): string => {
+    return new Intl.NumberFormat(language, {
+      style: 'currency',
+      currency: currency
+    }).format(value);
+  };
+
+  // Apply language settings
+  useEffect(() => {
+    document.documentElement.lang = language.split('-')[0];
+    
+    // Example of applying currency format to elements with data-currency attribute
+    const currencyElements = document.querySelectorAll('[data-currency]');
+    currencyElements.forEach(element => {
+      const value = element.getAttribute('data-value');
+      if (value) {
+        element.textContent = formatCurrency(parseFloat(value));
+      }
+    });
+  }, [currency, language]);
+  
   // Save settings to localStorage
   const saveSettings = () => {
     localStorage.setItem('trakr-currency', currency);
@@ -63,6 +85,18 @@ const SettingsPage = () => {
     
     // Apply shame-free mode to the document
     document.documentElement.setAttribute('data-shame-free', shameFreeMode ? 'true' : 'false');
+    
+    // Dispatch a custom event to notify other components of settings changes
+    window.dispatchEvent(new CustomEvent('settings-updated', { 
+      detail: { 
+        currency,
+        language,
+        notifications,
+        shameFreeMode,
+        displayName,
+        email
+      } 
+    }));
     
     toast({
       title: "Settings saved",
@@ -99,7 +133,7 @@ const SettingsPage = () => {
     }
   };
   
-  // Export data as JSON
+  // Export data
   const exportData = () => {
     const data = {
       transactions: localStorage.getItem('transactions'),

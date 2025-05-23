@@ -1,15 +1,9 @@
-
 import React from 'react';
 import { Moon, Sun, MessageSquare, Settings, Lightbulb, X } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { PersonalityQuiz } from './features/PersonalityQuiz';
-import { BehavioralStreaks } from './features/BehavioralStreaks';
-import { ShameFreeMode } from './features/ShameFreeMode';
-import { GamifiedFeatures } from './features/GamifiedFeatures';
-import { MindfulAddons } from './features/MindfulAddons';
 
 interface MobileSidebarProps {
   open: boolean;
@@ -31,11 +25,9 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ open, onOpenChange, onNav
         <SheetHeader className="p-4 border-b">
           <div className="flex justify-between items-center">
             <SheetTitle>Menu</SheetTitle>
-            <SheetClose asChild>
-              <Button variant="ghost" size="icon">
-                <X className="h-4 w-4" />
-              </Button>
-            </SheetClose>
+            <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
+              <X className="h-4 w-4" />
+            </Button>
           </div>
         </SheetHeader>
         
