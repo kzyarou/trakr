@@ -29,5 +29,16 @@ export default defineConfig(({ mode }) => ({
         manualChunks: undefined,
       },
     },
+    target: ['es2015', 'chrome58', 'firefox57', 'safari11'],
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+  },
+  define: {
+    global: 'globalThis',
   },
 }));

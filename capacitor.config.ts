@@ -3,13 +3,30 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'app.lovable.05c47273d3a246d2bdd899b0b3be1be7',
-  appName: 'trakr',
+  appName: 'Trakr',
   webDir: 'dist',
   server: {
     url: 'https://05c47273-d3a2-46d2-bdd8-99b0b3be1be7.lovableproject.com?forceHideBadge=true',
     cleartext: true
   },
-  bundledWebRuntime: false
+  bundledWebRuntime: false,
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 2000,
+      backgroundColor: "#000000",
+      showSpinner: false,
+      splashFullScreen: true,
+      splashImmersive: true
+    },
+    StatusBar: {
+      style: 'DARK',
+      backgroundColor: "#000000"
+    },
+    Keyboard: {
+      resize: 'body',
+      style: 'DARK'
+    }
+  }
 };
 
 export default config;

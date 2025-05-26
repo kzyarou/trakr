@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Trakr - Personal Finance Manager</title>
     <meta name="description" content="Track your personal finances with Trakr" />
     <meta name="author" content="Lovable" />
@@ -11,15 +11,48 @@
     <!-- Mobile App Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Trakr">
+    <meta name="theme-color" content="#000000">
+    <meta name="msapplication-TileColor" content="#000000">
     
-    <!-- Prevent zooming on inputs -->
+    <!-- Prevent zooming and ensure full screen -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- Disable text size adjust -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
 
-    <!-- App Icon -->
+    <!-- App Icons -->
     <link rel="icon" href="/wallet-icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/wallet-icon.svg">
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Splash Screen -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Prevent user selection and context menus for app-like feel -->
+    <style>
+      * {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      
+      input, textarea {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
+      }
+      
+      body {
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+      }
+    </style>
 
     <meta property="og:title" content="Trakr - Personal Finance Manager" />
     <meta property="og:description" content="Track your personal finances with Trakr" />
