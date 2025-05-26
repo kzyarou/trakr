@@ -35,6 +35,7 @@ import {
 import { Transaction, Wallet } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import HelpPage from '@/components/HelpPage';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -208,6 +209,7 @@ const Index = () => {
                     {currentPage === 'shame-free' && 'Shame-Free Mode'}
                     {currentPage === 'gamified' && 'Gamified Features'}
                     {currentPage === 'mindful' && 'Mindful Add-Ons'}
+                    {currentPage === 'help' && 'Help & Features'}
                   </h1>
                   <p className="text-sm md:text-base text-muted-foreground">
                     {currentPage === 'dashboard' && 'Overview of your financial status'}
@@ -224,12 +226,17 @@ const Index = () => {
                     {currentPage === 'shame-free' && 'Positive, non-judgmental guidance'}
                     {currentPage === 'gamified' && 'Make finance fun through games'}
                     {currentPage === 'mindful' && 'Connect finances with well-being'}
+                    {currentPage === 'help' && 'Complete guide to all app features'}
                   </p>
                 </div>
   
                 {currentPage === 'ai-advisor' ? (
                   <div className="animate-fade-in h-[calc(100vh-200px)]">
                     <FinancialAiAdvisor onBack={() => setCurrentPage('dashboard')} />
+                  </div>
+                ) : currentPage === 'help' && (
+                  <div className="animate-fade-in">
+                    <HelpPage />
                   </div>
                 ) : currentPage === 'dashboard' && (
                   <div className="space-y-4 md:space-y-6 animate-fade-in">
