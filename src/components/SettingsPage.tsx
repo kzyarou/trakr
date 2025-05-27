@@ -9,11 +9,14 @@ import { useToast } from '@/hooks/use-toast';
 import { useTheme } from '@/hooks/use-theme';
 import { useMediaQuery } from '@/hooks/use-mobile';
 import { LogOut } from 'lucide-react';
+import { logoutUser } from '@/lib/firebase';
+import { useNavigate } from 'react-router-dom';
 
 const SettingsPage = () => {
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const navigate = useNavigate();
   
   // Settings state
   const [currency, setCurrency] = useState('USD');
@@ -100,18 +103,25 @@ const SettingsPage = () => {
   };
   
   // Handle sign out
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     if (confirm('Are you sure you want to sign out?')) {
-      // Clear user session data
-      localStorage.clear();
+      const result = await logoutUser();
       
-      toast({
-        title: "Signed out",
-        description: "You have been signed out successfully.",
-      });
-      
-      // Refresh the page to reset the app state
-      window.location.reload();
+      if (result.success) {
+        toast({
+          title: "Signed out",
+          description: "You have been signed out successfully.",
+        });
+        
+        // Navigate to login page instead of reloading
+        navigate('/login');
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to sign out. Please try again.",
+        });
+      }
     }
   };
   
@@ -321,7 +331,7 @@ const SettingsPage = () => {
             <CardContent className="space-y-4">
               <div className="p-4 border rounded-lg bg-muted/50">
                 <p className="text-sm text-muted-foreground mb-2">
-                  Sign out of your current session. This will clear all your local data and settings.
+                  Sign out of your current session. Your data will be preserved.
                 </p>
                 <Button 
                   variant="destructive" 

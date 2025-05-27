@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { useToast } from "@/hooks/use-toast";
@@ -182,7 +183,7 @@ const Index = () => {
                     >
                       <Menu className="h-5 w-5" />
                     </Button>
-                    <img src="/wallet-icon.svg" alt="Trakr Logo" className="h-6 w-6" />
+                    <img src="/trakr-logo.svg" alt="Trakr Logo" className="h-6 w-6" />
                     <h1 className="text-xl font-bold">Trakr</h1>
                   </div>
                 </div>
