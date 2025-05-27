@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -9,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { useTheme } from '@/hooks/use-theme';
 import { useMediaQuery } from '@/hooks/use-mobile';
+import { LogOut } from 'lucide-react';
 
 const SettingsPage = () => {
   const { theme, setTheme } = useTheme();
@@ -99,6 +99,22 @@ const SettingsPage = () => {
     setShameFreeMode(checked);
   };
   
+  // Handle sign out
+  const handleSignOut = () => {
+    if (confirm('Are you sure you want to sign out?')) {
+      // Clear user session data
+      localStorage.clear();
+      
+      toast({
+        title: "Signed out",
+        description: "You have been signed out successfully.",
+      });
+      
+      // Refresh the page to reset the app state
+      window.location.reload();
+    }
+  };
+  
   // Clear all data
   const clearAllData = () => {
     if (confirm('Are you sure you want to clear all your data? This action cannot be undone.')) {
@@ -174,6 +190,7 @@ const SettingsPage = () => {
         <TabsList className="w-full mb-6 overflow-x-auto no-scrollbar">
           <TabsTrigger value="preferences">Preferences</TabsTrigger>
           <TabsTrigger value="data">Data Management</TabsTrigger>
+          <TabsTrigger value="account">Account</TabsTrigger>
         </TabsList>
         
         <TabsContent value="preferences" className="space-y-4">
@@ -292,6 +309,30 @@ const SettingsPage = () => {
                 Clear All Data
               </Button>
             </CardFooter>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="account" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Account Management</CardTitle>
+              <CardDescription>Manage your account settings and session</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-4 border rounded-lg bg-muted/50">
+                <p className="text-sm text-muted-foreground mb-2">
+                  Sign out of your current session. This will clear all your local data and settings.
+                </p>
+                <Button 
+                  variant="destructive" 
+                  onClick={handleSignOut}
+                  className="w-full md:w-auto"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
+            </CardContent>
           </Card>
         </TabsContent>
       </Tabs>

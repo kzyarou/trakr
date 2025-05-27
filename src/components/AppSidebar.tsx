@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Moon, Sun, MessagesSquare, Home, Wallet, PieChart, Settings, Lightbulb, BarChart2, Trophy, Heart, UserIcon } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
@@ -39,7 +38,7 @@ export default function AppSidebar({ currentPage, onNavigate }: AppSidebarProps)
     <Sidebar>
       <SidebarHeader className="p-4">
         <div className="flex items-center space-x-2">
-          <Wallet className="h-6 w-6 text-primary" />
+          <img src="/wallet-icon.svg" alt="Trakr Logo" className="h-8 w-8" />
           <span className="text-xl font-bold">Trakr</span>
         </div>
       </SidebarHeader>

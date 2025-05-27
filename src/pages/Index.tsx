@@ -182,6 +182,7 @@ const Index = () => {
                     >
                       <Menu className="h-5 w-5" />
                     </Button>
+                    <img src="/wallet-icon.svg" alt="Trakr Logo" className="h-6 w-6" />
                     <h1 className="text-xl font-bold">Trakr</h1>
                   </div>
                 </div>
