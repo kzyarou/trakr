@@ -1,25 +1,34 @@
 
 import React from 'react';
-import { HomeIcon, ListIcon, PieChartIcon, BarChart2Icon, PlusIcon } from 'lucide-react';
+import { HomeIcon, ListIcon, PieChartIcon, BarChart2Icon, PlusIcon, WalletIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MobileNavbarProps {
   currentPage: string;
   onNavigate: (page: string) => void;
   onAddTransaction: () => void;
+  onAddWallet?: () => void;
 }
 
 const MobileNavbar: React.FC<MobileNavbarProps> = ({
   currentPage,
   onNavigate,
-  onAddTransaction
+  onAddTransaction,
+  onAddWallet
 }) => {
   const navItems = [
     { id: 'dashboard', label: 'Home', icon: HomeIcon },
     { id: 'transactions', label: 'Trans', icon: ListIcon },
     { id: 'add', label: '', icon: PlusIcon, action: onAddTransaction, highlight: true },
     { id: 'budgets', label: 'Budget', icon: PieChartIcon },
-    { id: 'reports', label: 'Reports', icon: BarChart2Icon }
+    { id: 'wallets', label: 'Wallets', icon: WalletIcon, action: onAddWallet ? () => {
+      // If we have onAddWallet function, use it, otherwise navigate to wallets page
+      if (currentPage === 'wallets') {
+        onAddWallet();
+      } else {
+        onNavigate('wallets');
+      }
+    } : undefined }
   ];
 
   return (

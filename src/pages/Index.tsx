@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { useToast } from "@/hooks/use-toast";
@@ -17,6 +16,7 @@ import ReportsPage from '@/components/ReportsPage';
 import MiniAppsGrid from '@/components/MiniAppsGrid';
 import FinancialAiAdvisor from '@/components/FinancialAiAdvisor';
 import AppSidebar from '@/components/AppSidebar';
+import WalletCreationDialog from '@/components/WalletCreationDialog';
 import { PersonalityQuiz } from '@/components/features/PersonalityQuiz';
 import { BehavioralStreaks } from '@/components/features/BehavioralStreaks';
 import { ShameFreeMode } from '@/components/features/ShameFreeMode';
@@ -41,6 +41,7 @@ import HelpPage from '@/components/HelpPage';
 const Index = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [showTransactionForm, setShowTransactionForm] = useState(false);
+  const [showWalletForm, setShowWalletForm] = useState(false);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [budgets, setBudgets] = useState(getBudgets());
@@ -74,10 +75,17 @@ const Index = () => {
       setLanguage(newLanguage);
     };
     
+    // Listen for wallet creation
+    const handleWalletCreated = () => {
+      setWallets(getWallets());
+    };
+    
     window.addEventListener('settings-updated', handleSettingsUpdate as EventListener);
+    window.addEventListener('wallet-created', handleWalletCreated);
     
     return () => {
       window.removeEventListener('settings-updated', handleSettingsUpdate as EventListener);
+      window.removeEventListener('wallet-created', handleWalletCreated);
     };
   }, []);
 
@@ -386,6 +394,7 @@ const Index = () => {
           currentPage={currentPage}
           onNavigate={setCurrentPage}
           onAddTransaction={() => setShowTransactionForm(true)}
+          onAddWallet={() => setShowWalletForm(true)}
         />
       )}
 
@@ -400,6 +409,11 @@ const Index = () => {
         open={showTransactionForm}
         onOpenChange={setShowTransactionForm}
         onAddTransaction={handleAddTransaction}
+      />
+
+      <WalletCreationDialog
+        open={showWalletForm}
+        onOpenChange={setShowWalletForm}
       />
     </SidebarProvider>
   );

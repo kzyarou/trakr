@@ -15,9 +15,10 @@ interface NavbarProps {
   onNavigate: (page: string) => void;
   currentPage: string;
   onAddTransaction: () => void;
+  onAddWallet?: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentPage, onAddTransaction }) => {
+const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentPage, onAddTransaction, onAddWallet }) => {
   return (
     <div className="bg-white shadow-sm border-b">
       <div className="container mx-auto px-4">
@@ -47,6 +48,12 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentPage, onAddTransacti
               Budgets
             </Button>
             <Button 
+              variant={currentPage === 'wallets' ? 'default' : 'ghost'}
+              onClick={() => onNavigate('wallets')}
+            >
+              Wallets
+            </Button>
+            <Button 
               variant={currentPage === 'reports' ? 'default' : 'ghost'}
               onClick={() => onNavigate('reports')}
             >
@@ -61,8 +68,19 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentPage, onAddTransacti
               className="flex items-center space-x-1"
             >
               <PlusIcon className="h-4 w-4" />
-              <span>Add</span>
+              <span>Add Transaction</span>
             </Button>
+            
+            {onAddWallet && (
+              <Button 
+                onClick={onAddWallet}
+                variant="outline"
+                className="flex items-center space-x-1"
+              >
+                <WalletIcon className="h-4 w-4" />
+                <span>Add Wallet</span>
+              </Button>
+            )}
             
             {/* Mobile menu */}
             <div className="block md:hidden">
@@ -123,6 +141,16 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentPage, onAddTransacti
                     >
                       <ArrowUpIcon className="mr-2 h-4 w-4" />
                       Budgets
+                    </Button>
+                    <Button 
+                      variant={currentPage === 'wallets' ? 'default' : 'ghost'} 
+                      className="w-full justify-start"
+                      onClick={() => {
+                        onNavigate('wallets');
+                      }}
+                    >
+                      <WalletIcon className="mr-2 h-4 w-4" />
+                      Wallets
                     </Button>
                     <Button 
                       variant={currentPage === 'reports' ? 'default' : 'ghost'} 
