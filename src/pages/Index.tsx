@@ -230,15 +230,19 @@ const Index = () => {
                   </p>
                 </div>
   
-                {currentPage === 'ai-advisor' ? (
+                {currentPage === 'ai-advisor' && (
                   <div className="animate-fade-in h-[calc(100vh-200px)]">
                     <FinancialAiAdvisor onBack={() => setCurrentPage('dashboard')} />
                   </div>
-                ) : currentPage === 'help' && (
+                )}
+                
+                {currentPage === 'help' && (
                   <div className="animate-fade-in">
                     <HelpPage />
                   </div>
-                ) : currentPage === 'dashboard' && (
+                )}
+                
+                {currentPage === 'dashboard' && (
                   <div className="space-y-4 md:space-y-6 animate-fade-in">
                     {/* Summary Cards */}
                     <SummaryCards summary={summary} />
