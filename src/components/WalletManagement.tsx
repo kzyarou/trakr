@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { PlusIcon, MinusIcon, Pencil, WalletIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Wallet } from '@/lib/types';
 import { getWallets, saveWallets, generateId } from '@/lib/data';
+import { useMediaQuery } from '@/hooks/use-mobile';
 
 const WalletManagement = () => {
   const [wallets, setWallets] = useState<Wallet[]>(getWallets());
@@ -28,6 +28,7 @@ const WalletManagement = () => {
     color: '#4299E1',
   });
   const { toast } = useToast();
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const totalBalance = wallets.reduce((sum, wallet) => sum + wallet.balance, 0);
 
@@ -174,12 +175,16 @@ const WalletManagement = () => {
           <h2 className="text-lg font-semibold">Your Wallets</h2>
           <Dialog open={openAddDialog} onOpenChange={setOpenAddDialog}>
             <DialogTrigger asChild>
-              <Button size="sm" onClick={() => resetForm()}>
+              <Button 
+                size={isMobile ? "default" : "sm"} 
+                className={isMobile ? "w-full sm:w-auto" : ""}
+                onClick={() => resetForm()}
+              >
                 <PlusIcon className="mr-1 h-4 w-4" />
                 Add Wallet
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className={isMobile ? "w-[95vw] max-w-[95vw]" : ""}>
               <DialogHeader>
                 <DialogTitle>Add New Wallet</DialogTitle>
               </DialogHeader>
@@ -241,16 +246,24 @@ const WalletManagement = () => {
           <div className="text-center py-10">
             <WalletIcon className="mx-auto h-12 w-12 text-gray-400" />
             <p className="mt-4 text-gray-500">No wallets added yet</p>
-            <p className="text-sm text-gray-400">Add a wallet to start tracking your finances</p>
+            <p className="text-sm text-gray-400 mb-4">Add a wallet to start tracking your finances</p>
+            <Dialog open={openAddDialog} onOpenChange={setOpenAddDialog}>
+              <DialogTrigger asChild>
+                <Button onClick={() => resetForm()}>
+                  <PlusIcon className="mr-1 h-4 w-4" />
+                  Create Your First Wallet
+                </Button>
+              </DialogTrigger>
+            </Dialog>
           </div>
         ) : (
           <div className="grid gap-4">
             {wallets.map(wallet => (
               <Card key={wallet.id} className="border-l-4" style={{ borderLeftColor: wallet.color }}>
                 <CardContent className="p-4">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="flex items-center space-x-2">
+                  <div className={`flex ${isMobile ? 'flex-col space-y-3' : 'justify-between items-center'}`}>
+                    <div className={isMobile ? 'text-center' : ''}>
+                      <div className="flex items-center justify-center space-x-2">
                         <h3 className="font-medium">{wallet.name}</h3>
                         {wallet.isDefault && (
                           <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
@@ -262,13 +275,14 @@ const WalletManagement = () => {
                         {formatBalance(wallet.balance, wallet.currency)}
                       </div>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className={`flex ${isMobile ? 'justify-center flex-wrap gap-2' : 'space-x-2'}`}>
                       <Button variant="outline" size="sm" onClick={() => editWallet(wallet)}>
                         <Pencil className="h-4 w-4" />
+                        {isMobile && <span className="ml-1">Edit</span>}
                       </Button>
                       {!wallet.isDefault && (
                         <Button variant="outline" size="sm" onClick={() => setDefaultWallet(wallet.id)}>
-                          Set Default
+                          {isMobile ? 'Default' : 'Set Default'}
                         </Button>
                       )}
                       {wallets.length > 1 && (
@@ -279,6 +293,7 @@ const WalletManagement = () => {
                           className="text-red-500 hover:text-red-700"
                         >
                           <MinusIcon className="h-4 w-4" />
+                          {isMobile && <span className="ml-1">Delete</span>}
                         </Button>
                       )}
                     </div>
@@ -292,7 +307,7 @@ const WalletManagement = () => {
 
       {/* Edit Wallet Dialog */}
       <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
-        <DialogContent>
+        <DialogContent className={isMobile ? "w-[95vw] max-w-[95vw]" : ""}>
           <DialogHeader>
             <DialogTitle>Edit Wallet</DialogTitle>
           </DialogHeader>
