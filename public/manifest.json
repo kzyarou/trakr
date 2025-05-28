@@ -5,13 +5,13 @@
   "description": "Track your personal finances with Trakr",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#22c55e",
+  "theme_color": "#22c55e",
   "orientation": "portrait-primary",
   "scope": "/",
   "icons": [
     {
-      "src": "/wallet-icon.svg",
+      "src": "/wallet-icon-green.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"

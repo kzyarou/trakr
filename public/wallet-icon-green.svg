@@ -1,0 +1,41 @@
+
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#ffffff" rx="80"/>
+  
+  <!-- Main wallet body -->
+  <g transform="translate(96, 140)">
+    <!-- Wallet shadow -->
+    <rect x="4" y="44" width="316" height="180" rx="16" ry="16" fill="#15803d" opacity="0.3"/>
+    
+    <!-- Main wallet -->
+    <rect x="0" y="40" width="316" height="180" rx="16" ry="16" fill="#22c55e" stroke="#16a34a" stroke-width="3"/>
+    
+    <!-- Wallet flap -->
+    <rect x="0" y="20" width="316" height="40" rx="16" ry="16" fill="#16a34a"/>
+    
+    <!-- Card slot -->
+    <rect x="240" y="80" width="60" height="32" rx="6" ry="6" fill="#15803d"/>
+    
+    <!-- Money bills -->
+    <rect x="20" y="10" width="70" height="16" rx="3" ry="3" fill="#dcfce7"/>
+    <rect x="30" y="5" width="70" height="16" rx="3" ry="3" fill="#bbf7d0"/>
+    <rect x="40" y="0" width="70" height="16" rx="3" ry="3" fill="#86efac"/>
+    
+    <!-- Wallet clasp -->
+    <rect x="270" y="0" width="50" height="70" rx="8" ry="8" fill="#15803d"/>
+    <rect x="285" y="8" width="20" height="54" rx="8" ry="8" fill="#ffffff"/>
+    
+    <!-- Coin pocket detail -->
+    <circle cx="70" cy="150" r="25" fill="#16a34a"/>
+    <circle cx="70" cy="150" r="18" fill="#22c55e"/>
+    
+    <!-- Dollar sign -->
+    <text x="70" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#15803d">$</text>
+    
+    <!-- Additional wallet details -->
+    <rect x="20" y="100" width="60" height="3" rx="1.5" ry="1.5" fill="#16a34a"/>
+    <rect x="20" y="110" width="45" height="3" rx="1.5" ry="1.5" fill="#16a34a"/>
+    <rect x="20" y="120" width="55" height="3" rx="1.5" ry="1.5" fill="#16a34a"/>
+  </g>
+</svg>
