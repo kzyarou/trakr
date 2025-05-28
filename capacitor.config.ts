@@ -13,19 +13,29 @@ const config: CapacitorConfig = {
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
-      backgroundColor: "#000000",
+      backgroundColor: "#22c55e",
       showSpinner: false,
       splashFullScreen: true,
       splashImmersive: true
     },
     StatusBar: {
-      style: 'DARK',
-      backgroundColor: "#000000"
+      style: 'LIGHT',
+      backgroundColor: "#22c55e"
     },
     Keyboard: {
       resize: 'body',
       style: 'DARK'
+    },
+    App: {
+      backButtonText: 'Back'
     }
+  },
+  ios: {
+    contentInset: 'automatic'
+  },
+  android: {
+    allowMixedContent: true,
+    captureInput: true
   }
 };
 
